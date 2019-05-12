@@ -113,6 +113,12 @@
 
 *.SCR
 
+
+
+# Generated output files
+/Listings/*
+/Objects/*
+
  
 
 # Debugger Files
@@ -161,5 +167,18 @@
 
 *.XML
 
+
+
 # Astyle备份文件
 .orig
+
+
+
+# Miscellaneous
+*.tra
+*.bin
+*.fed
+*.l1p
+*.l2p
+*.iex
+
