@@ -160,3 +160,6 @@
 *.SVD
 
 *.XML
+
+# Astyle备份文件
+.orig
