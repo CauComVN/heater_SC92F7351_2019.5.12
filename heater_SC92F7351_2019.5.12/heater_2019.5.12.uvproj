@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x0</ToolsetNumber>
       <ToolsetName>MCS-51</ToolsetName>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>SC92F7351</Device>
@@ -148,7 +149,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>10</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -392,6 +393,11 @@
               <FileName>IO_Init.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\IO_Init.c</FilePath>
+            </File>
+            <File>
+              <FileName>waterdetection.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\waterdetection.c</FilePath>
             </File>
           </Files>
         </Group>

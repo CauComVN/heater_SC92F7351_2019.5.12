@@ -10,7 +10,7 @@ unsigned int ADCValue = 0x0000;
 bit AdcFlag = 0;
 
 ////////////////////////////////////////////////////////////
-const unsigned int NUM = 6; //连续多次采样转换，设置要等于或大于6
+const unsigned int NUM = 7; //连续多次采样转换，设置要等于或大于7
 float ADC_Value0,ADC_Value1,ADC_Value2;
 
 /***********SC92F7351 ADC采样口选择*************/
@@ -63,6 +63,8 @@ void ADC_Interrupt(void) interrupt 6
 
 ////////////////////////////////////////////////////////////
 
+//8 AIN8 AD-out 出水温度
+//7 AIN9 AD-in	进水温度
 /*****************************************************
 *函数名称：float ADC_Convert(void)
 *函数功能：返回检测温度值
@@ -109,7 +111,9 @@ float ADC_Convert(void)
     nRemoveNum++;
     TempAdd-=MaxAd; //去掉最大值
     nRemoveNum++;
-    TempAdd>>=(NUM-nRemoveNum); //求平均值
+    //TempAdd=TempAdd/(NUM-nRemoveNum); //求平均值
+	TempAdd>>=2; //求平均值，如果检测7次，去掉3次，变为4，4是2次方，所以右移2
+	
 
     //写公式（电压转换，电阻转换，温度转换）
     //12位ADC 2(12)=4096  5v=5v;
