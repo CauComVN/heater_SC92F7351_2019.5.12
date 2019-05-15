@@ -14,5 +14,6 @@ extern void IO_Init(void);
 extern void ADC_Test(void);
 extern float ADC_Convert(void);
 extern void ADC_channel(unsigned char channel);
+void Leakage_EXTI_Test(void);
 
 #endif

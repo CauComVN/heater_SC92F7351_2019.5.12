@@ -1,8 +1,8 @@
 #include "Function_Init.H"
 #include "MATH.H"
 
-void ADC_Test(void);
 void ADC_Init(uint Channel);
+void ADC_Test(void);
 float ADC_Convert(void);
 void ADC_channel(unsigned char channel);
 	
@@ -10,6 +10,9 @@ unsigned int ADCValue = 0x0000;
 bit AdcFlag = 0;
 
 ////////////////////////////////////////////////////////////
+//AIN9: AD in 进水采样温度
+//AIN8: AD out 出水采用温度
+
 const unsigned int NUM = 7; //连续多次采样转换，设置要等于或大于7
 float ADC_Value0,ADC_Value1,ADC_Value2;
 
@@ -24,7 +27,16 @@ enum Channel {AIN0=0,AIN1,AIN4=4,AIN5,AIN8=8,AIN9,VDD4=15};
 *****************************************************/
 void ADC_Test(void)
 {
-    ADC_Init(AIN0);
+    ADC_Init(AIN9);
+    while(1)
+    {
+        ADCCON |= 0X40;   //开始ADC转换
+        while(!AdcFlag);	         		 //等待 ADC转换完成;
+        AdcFlag = 0;
+        ADCValue = (ADCVH<<4)+(ADCVL>>4);
+    }
+	
+	ADC_Init(AIN8);
     while(1)
     {
         ADCCON |= 0X40;   //开始ADC转换
