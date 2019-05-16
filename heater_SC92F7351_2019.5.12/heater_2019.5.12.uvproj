@@ -13,14 +13,14 @@
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>SC92F7351</Device>
+          <Device>SC92F7321</Device>
           <Vendor>SC92Fxx Series</Vendor>
-          <Cpu>IRAM(0-0xFF) IROM(0-0x1FFF) CLOCK(24000000)</Cpu>
+          <Cpu>IRAM(0-0xFF) IROM(0-0x1FFF) XRAM(0-0xFF) CLOCK(24000000)</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"LIB\STARTUP.A51" ("Standard 8051 Startup Code")</StartupFile>
           <FlashDriverDll></FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>SC92F735X.H</RegisterFile>
+          <RegisterFile>SC92F732X.H</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -36,7 +36,7 @@
           <BinPath>d:\Keil_v5\C51\BIN\</BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath></RegisterFilePath>
+          <RegisterFilePath>SOC\</RegisterFilePath>
           <DBRegisterFilePath>SOC\</DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
@@ -168,16 +168,16 @@
         </DebugOption>
         <Utilities>
           <Flash1>
-            <UseTargetDll>0</UseTargetDll>
+            <UseTargetDll>1</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4102</DriverSelection>
+            <DriverSelection>4104</DriverSelection>
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2>SinOne_Chip\SOC_Debug_Driver\SinOne_Chip_Debug_Driver.dll</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -196,7 +196,7 @@
             <UseMultipleDPTR>0</UseMultipleDPTR>
             <UseOnchipXram>0</UseOnchipXram>
             <HadIRAM>1</HadIRAM>
-            <HadXRAM>0</HadXRAM>
+            <HadXRAM>1</HadXRAM>
             <HadIROM>1</HadIROM>
             <Moda2>0</Moda2>
             <Moddp2>0</Moddp2>
@@ -281,7 +281,7 @@
               <XRA>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <Size>0x100</Size>
               </XRA>
               <XRA512>
                 <Type>0</Type>
@@ -410,14 +410,14 @@
           <GroupName>include</GroupName>
           <Files>
             <File>
-              <FileName>SC92F735x_C.H</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\include\SC92F735x_C.H</FilePath>
-            </File>
-            <File>
               <FileName>Function_Init.H</FileName>
               <FileType>5</FileType>
               <FilePath>.\include\Function_Init.H</FilePath>
+            </File>
+            <File>
+              <FileName>SC92F732X_C.H</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\include\SC92F732X_C.H</FilePath>
             </File>
           </Files>
         </Group>

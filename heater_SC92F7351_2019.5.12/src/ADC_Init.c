@@ -13,7 +13,8 @@ bit AdcFlag = 0;
 //AIN9: AD in 进水采样温度
 //AIN8: AD out 出水采用温度
 
-const unsigned int NUM = 7; //连续多次采样转换，设置要等于或大于7
+
+ //连续多次采样转换，设置要等于或大于7
 float ADC_Value0,ADC_Value1,ADC_Value2;
 
 /***********SC92F7351 ADC采样口选择*************/
@@ -27,23 +28,25 @@ enum Channel {AIN0=0,AIN1,AIN4=4,AIN5,AIN8=8,AIN9,VDD4=15};
 *****************************************************/
 void ADC_Test(void)
 {
-    ADC_Init(AIN9);
-    while(1)
-    {
-        ADCCON |= 0X40;   //开始ADC转换
-        while(!AdcFlag);	         		 //等待 ADC转换完成;
-        AdcFlag = 0;
-        ADCValue = (ADCVH<<4)+(ADCVL>>4);
-    }
+//	ADC_Init(AIN0);
+//	while(1)
+//	{
+//		ADCCON |= 0X40;   //开始ADC转换
+//		while(!AdcFlag);	         		 //等待 ADC转换完成;
+//		AdcFlag = 0;
+//		ADCValue = (ADCVH<<4)+(ADCVL>>4);
+//	}
+	
+	float t8=0.0,t9=0.0;	
+	int ret =0;
+	
+//    ADC_Init(AIN9);
+//    t9=ADC_Convert(); //启动ADC转换，获得转换值
 	
 	ADC_Init(AIN8);
-    while(1)
-    {
-        ADCCON |= 0X40;   //开始ADC转换
-        while(!AdcFlag);	         		 //等待 ADC转换完成;
-        AdcFlag = 0;
-        ADCValue = (ADCVH<<4)+(ADCVL>>4);
-    }
+    t8=ADC_Convert(); //启动ADC转换，获得转换值
+	
+	ret = 0;
 }
 /*****************************************************
 *函数名称：void ADC_Init(uint Channel)
@@ -86,19 +89,24 @@ void ADC_Interrupt(void) interrupt 6
 float ADC_Convert(void)
 {
     float T2=(273.15+25.0); //T2
-    float Rp=100000.0; //100k
+	
+	//R是热敏电阻在T2常温下的标称阻值。100K的热敏电阻25℃的值为100K（即R=100K）。T2=(273.15+25)
+	float R=100000.0; //100k
+	
     float R8=10000.0; //10k
+	//float R8=100000.0; //100k
+	
     float Bx=3950.0; //B
     float Ka=273.15;
 
+	float test = 0.0;
     float ret = 0.0;
     float Rt = 0.0;
     float volta = 0.0;
-    unsigned int nRemoveNum=0;
     unsigned int Tad=0;
     unsigned int MinAd=0x0fff,MaxAd=0x0000,TempAdd=0;
     unsigned char t=0;
-    for(t=0; t<NUM; t++)
+    for(t=0; t<7; t++)
     {
         ADCCON |= 0x40; //开始ADC转换
         while(!AdcFlag); //等待 ADC转换完成
@@ -107,7 +115,6 @@ float ADC_Convert(void)
 
         //第一次值不可靠，去掉
         if(t==0) {
-            nRemoveNum++;
             continue;
         }
 
@@ -120,20 +127,34 @@ float ADC_Convert(void)
         TempAdd+=Tad; //转换值累加
     }
     TempAdd-=MinAd; //去掉最小值
-    nRemoveNum++;
+
     TempAdd-=MaxAd; //去掉最大值
-    nRemoveNum++;
-    //TempAdd=TempAdd/(NUM-nRemoveNum); //求平均值
+
+    //TempAdd=TempAdd/4; //求平均值
 	TempAdd>>=2; //求平均值，如果检测7次，去掉3次，变为4，4是2次方，所以右移2
 	
 
     //写公式（电压转换，电阻转换，温度转换）
     //12位ADC 2(12)=4096  5v=5v;
     volta=(float)TempAdd*5.0/4095;
-    Rt = (R8*volta)/(5.0-volta);
+	
+	if((5.0-volta)> 0.01){
+		Rt = (float)(R8*volta)/(5.0-volta);
 
-    ret=(1/(log(Rt/Rp)/Bx+(1/T2)))-273.15+0.5;
-    return ret;
+		ret=(1.0/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
+		test=0;
+		return ret;
+	}
+	else
+	{
+		//test
+		volta=3.0; //假定采用电压值
+		Rt = (R8*volta)/(5.0-volta);
+
+		ret=(1/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
+		test=0;
+		return ret;
+	}
 }
 
 void ADC_channel(unsigned char channel)
@@ -141,6 +162,7 @@ void ADC_channel(unsigned char channel)
     ADCCON=ADCCON&0xe0|channel; //ADC输入选择channel口
 }
 
+/*
 void ADC_Multichannel()
 {
 	ADCCFG0 = 0x07; //设置AIN0，AIN1，AN2为ADC口，并自动将上拉电阻移除
@@ -155,3 +177,4 @@ void ADC_Multichannel()
 	ADC_channel(2); //ADC入口切换至AIN2口
 	ADC_Value2=ADC_Convert(); //启动ADC转换，获得转换值
 }
+*/
