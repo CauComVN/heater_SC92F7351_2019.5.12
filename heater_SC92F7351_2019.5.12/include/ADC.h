@@ -118,7 +118,7 @@ unsigned int code bufTable_NTC_AD[]=
    };
 
 
-#define           NTC_AD_VALUE_MAX                        100.9 //(4095-100.9)   
-#define           NTC_AD_VALUE_MIN                        250.4 //(4095-250.4)
+#define           NTC_AD_VALUE_MAX                        250.4
+#define           NTC_AD_VALUE_MIN                        100.9
 	 
 #endif
