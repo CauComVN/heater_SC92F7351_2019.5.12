@@ -403,6 +403,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\leakage.c</FilePath>
             </File>
+            <File>
+              <FileName>scr_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\scr_driver.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

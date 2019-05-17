@@ -1,7 +1,7 @@
 #ifndef _Function_Init_H_
 #define _Function_Init_H_
 
-#include "SC92F735x_C.H"
+#include "SC92F732x_C.H"
 #include "intrins.H"
 #define uchar unsigned char
 #define uint unsigned int

@@ -6,6 +6,7 @@ void ADC_Init(uint Channel);
 void ADC_Test(void);
 int ADC_Convert(void);
 void ADC_channel(unsigned char channel);
+int get_temperature_from_table(uint nADValue, float* fTemperature);
 
 unsigned int ADCValue = 0x0000;
 bit AdcFlag = 0;
@@ -40,9 +41,9 @@ void ADC_Test(void)
 				//t9=ADC_Convert(); //启动ADC转换，获得转换值
 				//ret = get_temperature_from_table(t9,&fTemperature);
 
-//        ADC_Init(AIN8);
-//        t8=ADC_Convert(); //启动ADC转换，获得转换值
-//        ret = get_temperature_from_table(t8,&fTemperature);
+        ADC_Init(AIN8);
+        t8=ADC_Convert(); //启动ADC转换，获得转换值
+        ret = get_temperature_from_table(t8,&fTemperature);
 			
 				flag=1;
 				

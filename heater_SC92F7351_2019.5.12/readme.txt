@@ -9,6 +9,7 @@
 1.include目录：SC92F732x_C.H ---- SC92F735x_C.H
 2.Device芯片设置：SC92F7321 ---- SC92F7351
 3.调试设置 utilites->setting->SC92F7321  ---- SC92F7351
+4.所有包含头文件 SC92F732x_C.H ---- SC92F735x_C.H
 
 
 
