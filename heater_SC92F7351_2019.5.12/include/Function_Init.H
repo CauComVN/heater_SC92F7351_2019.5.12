@@ -9,11 +9,19 @@
 #define IapROM  0x00	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 #define IapEPPROM  0x02	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 
-extern void IO_Init(void);
-
 extern void ADC_Test(void);
 extern int ADC_Convert(void);
 extern void ADC_channel(unsigned char channel);
-void Leakage_EXTI_Test(void);
+extern void Leakage_EXTI_Test(void);
+
+/*****************************************
+说明：选择测试IC
+*****************************************/
+#define SC92F7323  0
+#define SC92F7322  1
+#define SC92F7321  2
+#define SC92F7320  3
+
+#define IC_MODEL  SC92F7321
 
 #endif

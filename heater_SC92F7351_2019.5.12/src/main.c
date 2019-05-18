@@ -10,7 +10,6 @@
 
 void main(void)
 {
-	IO_Init();
 	WDTCON |= 0x10;		    //Çå¿´ÃÅ¹·
 	switch(Test)
 	{
