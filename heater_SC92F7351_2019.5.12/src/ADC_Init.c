@@ -6,6 +6,8 @@ void ADC_Init(uint Channel);
 void ADC_Test(void);
 int ADC_Convert(void);
 void ADC_channel(unsigned char channel);
+void ADC_Interrupt_Handle(void);
+
 int get_temperature_from_table(uint nADValue, float* fTemperature);
 
 unsigned int ADCValue = 0x0000;
@@ -70,10 +72,9 @@ void ADC_Init(uint Channel)
     EA = 1;
 }
 
-
-void ADC_Interrupt(void) interrupt 6
+void ADC_Interrupt_Handle(void)
 {
-    ADCCON &= ~(0X10);  //清中断标志位
+	ADCCON &= ~(0X10);  //清中断标志位
     AdcFlag = 1;
 }
 
@@ -176,54 +177,54 @@ int ADC_Convert(void)
 *入口参数：nADValue: 采样AD值
 *出口参数：0：失败 1：成功
 *****************************************************/
-int get_temperature_from_formula(uint nADValue, float* fTemperature)
-{
-    //------- 公式法对8位赛元单片机不适用，计算量太大 ------
+//int get_temperature_from_formula(uint nADValue, float* fTemperature)
+//{
+//    //------- 公式法对8位赛元单片机不适用，计算量太大 ------
 
-    float T2=(273.15+25.0); //T2
+//    float T2=(273.15+25.0); //T2
 
-    //R是热敏电阻在T2常温下的标称阻值。100K的热敏电阻25℃的值为100K（即R=100K）。T2=(273.15+25)
-    int R=100000; //100k
+//    //R是热敏电阻在T2常温下的标称阻值。100K的热敏电阻25℃的值为100K（即R=100K）。T2=(273.15+25)
+//    int R=100000; //100k
 
-    uint Rp=10000;// 上拉电阻 10k
+//    uint Rp=10000;// 上拉电阻 10k
 
-    float Bx=3950.0; //B
-    float Ka=273.15;
-    float ret = 0.0;
-    float Rt = 0.0;
-    float volta = 0.0;
+//    float Bx=3950.0; //B
+//    float Ka=273.15;
+//    float ret = 0.0;
+//    float Rt = 0.0;
+//    float volta = 0.0;
 
-    //写公式（电压转换，电阻转换，温度转换）
-    //12位ADC 2(12)=4096  5v=5v;
-    volta=(float)nADValue*5.0/4095;
+//    //写公式（电压转换，电阻转换，温度转换）
+//    //12位ADC 2(12)=4096  5v=5v;
+//    volta=(float)nADValue*5.0/4095;
 
-    if((5.0-volta)> 0.01) {
-        Rt = (float)(Rp*volta)/(5.0-volta);
+//    if((5.0-volta)> 0.01) {
+//        Rt = (float)(Rp*volta)/(5.0-volta);
 
-        ret=(1.0/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
+//        ret=(1.0/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
 
-        //RES: -10C~100C
-        if(ret>100 && ret<-10)
-        {
-            *fTemperature = ret;
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        return 0;
-    }
-}
+//        //RES: -10C~100C
+//        if(ret>100 && ret<-10)
+//        {
+//            *fTemperature = ret;
+//            return 1;
+//        }
+//        else
+//        {
+//            return 0;
+//        }
+//    }
+//    else
+//    {
+//        return 0;
+//    }
+//}
 
 
-void ADC_channel(unsigned char channel)
-{
-    ADCCON=ADCCON&0xe0|channel; //ADC输入选择channel口
-}
+//void ADC_channel(unsigned char channel)
+//{
+//    ADCCON=ADCCON&0xe0|channel; //ADC输入选择channel口
+//}
 
 /*
 void ADC_Multichannel()

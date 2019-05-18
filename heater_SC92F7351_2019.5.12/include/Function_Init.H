@@ -12,7 +12,18 @@
 extern void ADC_Test(void);
 extern int ADC_Convert(void);
 extern void ADC_channel(unsigned char channel);
+extern void ADC_Interrupt_Handle(void);
+
 extern void Leakage_EXTI_Test(void);
+extern void Leakage_EX0_Handle(void);
+
+extern void Water_Detection_EXTI_Test(void);
+extern void Water_Detection_Timer_Test(void);
+extern void Water_Detection_EX2_Handle();
+extern void Water_Detection_Timer0_Handle();
+
+extern void Zero_Crossing_EXTI_Test(void);
+extern void Zero_Crossing_EX2_Handle();
 
 /*****************************************
 ËµÃ÷£ºÑ¡Ôñ²âÊÔIC

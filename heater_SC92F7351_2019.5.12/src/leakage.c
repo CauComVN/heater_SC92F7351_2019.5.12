@@ -7,10 +7,12 @@
 
 void Leakage_EXTI_Test(void);
 void Leakage_EX_Init(void);
+void Leakage_EX0_Handle(void);
+
 uchar Leakage_INT2_flag = 0x00;
 uchar Leakage_INT00_flag = 0x00;
 /*****************************************************
-*函数名称：void EXTI_Test(void)
+*函数名称：void Leakage_EXTI_Test(void)
 *函数功能：外部中断测试
 *入口参数：void
 *出口参数：void
@@ -23,7 +25,7 @@ void Leakage_EXTI_Test(void)
 	}
 }
 /*****************************************************
-*函数名称：void EX_Init(void)
+*函数名称：void Leakage_EX_Init(void)
 *函数功能：外部中断初始化
 *入口参数：void
 *出口参数：void
@@ -47,13 +49,7 @@ void Leakage_EX_Init(void)
 	EA = 1;
 }
 
-/*****************************************************
-*函数名称：void EX0() interrupt	0
-*函数功能：外部中断初始化
-*入口参数：void
-*出口参数：void
-*****************************************************/
-void Leakage_EX0() interrupt	0
+void Leakage_EX0_Handle(void)
 {
 	//设置INT00上升沿触发中断，如果进入中断后有漏电脉冲，P10 == 1，
 	//并且大于20ms，则漏电条件成立

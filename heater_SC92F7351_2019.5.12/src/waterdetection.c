@@ -1,34 +1,41 @@
 #include "Function_Init.H"
 #include "MATH.H"
 
+//Water Detection
+
 //霍尔水流传感器->外部中断计数，内部计时器定时
 //INT25 P21
 
 unsigned int number = 0;   //记录触发中断个数
 
-void EX_Init(void);
-uchar INT2_flag = 0x00;
+void Water_Detection_EX_Init(void);
+void Water_Detection_EXTI_Test(void);
+void Water_Detection_Timer_Test(void);
+void Water_Detection_EX2_Handle();
+void Water_Detection_Timer0_Handle();
+
+uchar Water_Detection_INT2_Flag = 0x00;
 uchar water_flow_flag=0x00;
 /*****************************************************
-*函数名称：void EXTI_Test(void)
+*函数名称：void Water_Detection_EXTI_Test(void)
 *函数功能：外部中断测试
 *入口参数：void
 *出口参数：void
 *****************************************************/
-void EXTI_Test(void)
+void Water_Detection_EXTI_Test(void)
 {
-    EX_Init();
+    Water_Detection_EX_Init();
     while(1)
     {
     }
 }
 /*****************************************************
-*函数名称：void EX_Init(void)
+*函数名称：void Water_Detection_EX_Init(void)
 *函数功能：外部中断初始化
 *入口参数：void
 *出口参数：void
 *****************************************************/
-void EX_Init(void)
+void Water_Detection_EX_Init(void)
 {
     //配置中断口25
     P2CON &= 0XFD;     //中断IO口设置为高阻输入
@@ -36,9 +43,9 @@ void EX_Init(void)
 
     //配置INT25下降沿中断
     //下降沿设置
-    INT2F = 0X20 ;    //0000 xxxx  0关闭 1使能
+    INT2F = 0X00 ;    //0000 xxxx  0关闭 1使能
     //上升沿设置
-    INT2R = 0X00 ;    //0000 xxxx  0关闭 1使能
+    INT2R = 0X20 ;    //0000 xxxx  0关闭 1使能
 
     //外部中断优先级设置
     IE1 |= 0x08;	//0000 x000  INT2使能
@@ -46,14 +53,7 @@ void EX_Init(void)
     EA = 1;
 }
 
-/*****************************************************
-*函数名称：void EX2() interrupt	10
-*函数功能：外部中断服务函数
-*入口参数：void
-*出口参数：void
-*****************************************************/
-
-void EX2() interrupt	10
+void Water_Detection_EX2_Handle()
 {
 	IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
 	
@@ -63,38 +63,38 @@ void EX2() interrupt	10
     //如果中断2有两路输入，根据上升沿或者下降沿来确认，这里是下降沿
     if(P20 == 0)
     {
-        INT2_flag = 0x10; //INT12产生中断
+        Water_Detection_INT2_Flag = 0x10; //INT12产生中断
     }
     if(P21 == 0) //INT25 P21 水流检测计数
     {
-        INT2_flag = 0x20; //INT13产生中断
+        Water_Detection_INT2_Flag = 0x20; //INT13产生中断
     }
 	
 	IE1 |= 0x08;	//0000 x000  INT2使能
 }
 
 //////////////////////////////////////////////////////////////
-void Timer_Init(void);
+void Water_Detection_Timer_Init(void);
 /*****************************************************
-*函数名称：void Timer_Test(void);
+*函数名称：void Water_Detection_Timer_Test(void);
 *函数功能：T0/T1/T2测试
 *入口参数：void
 *出口参数：void
 *****************************************************/
-void Timer_Test(void)
+void Water_Detection_Timer_Test(void)
 {
-    Timer_Init();
+    Water_Detection_Timer_Init();
     while(1)
     {
     }
 }
 /*****************************************************
-*函数名称：void Timer_Init(void)
+*函数名称：void Water_Detection_Timer_Init(void)
 *函数功能：T0/T1/T2初始化
 *入口参数：void
 *出口参数：void
 *****************************************************/
-void Timer_Init(void)
+void Water_Detection_Timer_Init(void)
 {
 	water_flow_flag = 0; //无水流
 	
@@ -115,15 +115,9 @@ void Timer_Init(void)
     EA = 1;
 }
 
-/**************************************************
-*函数名称：void timer0() interrupt 1
-*函数功能：定时器中断产生方波
-*入口参数：void
-*出口参数：void
-**************************************************/
-void timer0() interrupt 1
+void Water_Detection_Timer0_Handle()
 {
-//    TL0 = (65536 - 24000)%256;
+	//    TL0 = (65536 - 24000)%256;
 //	TH0 = (65536 - 24000)/256;
 //	P02 = ~P02;
 	

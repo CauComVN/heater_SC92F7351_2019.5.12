@@ -1,20 +1,24 @@
-//Zero crossing detection
+//Zero Crossing detection
+//SCR Driver
 
 #include "Function_Init.H"
 
-#if 0
+//INT24 P20
 
-void EX_Init(void);
-uchar INT1_flag = 0x00;
+void Zero_Crossing_EXTI_Test(void);
+void Zero_Crossing_EX_Init(void);
+void Zero_Crossing_EX2_Handle();
+
+uchar Zero_Crossing_INT1_flag = 0x00;
 /*****************************************************
 *º¯ÊıÃû³Æ£ºvoid EXTI_Test(void)
 *º¯Êı¹¦ÄÜ£ºÍâ²¿ÖĞ¶Ï²âÊÔ
 *Èë¿Ú²ÎÊı£ºvoid
 *³ö¿Ú²ÎÊı£ºvoid
 *****************************************************/
-void EXTI_Test(void)
+void Zero_Crossing_EXTI_Test(void)
 {
-	EX_Init();
+	Zero_Crossing_EX_Init();
 	while(1)
 	{					
 	}
@@ -25,59 +29,33 @@ void EXTI_Test(void)
 *Èë¿Ú²ÎÊı£ºvoid
 *³ö¿Ú²ÎÊı£ºvoid
 *****************************************************/
-void EX_Init(void)
+void Zero_Crossing_EX_Init(void)
 {	
-	//ÅäÖÃÖĞ¶Ï¿ÚINT03¡¢INT12/13¡¢INT24/25
-	P1CON &= 0X37;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×èÊäÈë
-	P1PH  |= 0xC8;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×è´øÉÏÀ­
-	P2CON &= 0XFC;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×èÊäÈë
-	P2PH  |= 0x03;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×è´øÉÏÀ­
+	//ÅäÖÃÖĞ¶Ï¿ÚINT24
+	P2CON &= 0XFE;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×èÊäÈë
+	P2PH  |= 0x01;     //ÖĞ¶ÏIO¿ÚÉèÖÃÎª¸ß×è´øÉÏÀ­
  
-	//ÅäÖÃINT03ÉÏÉıÑØÖĞ¶Ï¡¢INT12/13ÏÂ½µÑØÖĞ¶Ï¡¢INT24/25Ë«ÑØÖĞ¶Ï
-    //ÏÂ½µÑØÉèÖÃ	
-	INT0F = 0X00 ;    //xxxx 0000  0¹Ø±Õ 1Ê¹ÄÜ
-	INT1F = 0X0C ;    //xxxx xxxx  0¹Ø±Õ 1Ê¹ÄÜ
-    INT2F = 0X30 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
-    //ÉÏÉıÑØÉèÖÃ	
-	INT0R = 0X08 ;    //xxxx 0000  0¹Ø±Õ 1Ê¹ÄÜ 
-	INT1R = 0X00 ;    //xxxx xxxx  0¹Ø±Õ 1Ê¹ÄÜ
-	INT2R = 0X30 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ	
+	//INT24ÉÏÉıÖĞ¶Ï
+    //ÏÂ½µÑØÉèÖÃ
+    INT2F = 0X00 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
+    //ÉÏÉıÑØÉèÖÃ
+	INT2R = 0X10 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ	
 	
-	//Íâ²¿ÖĞ¶ÏÓÅÏÈ¼¶ÉèÖÃ
-	IE  |= 0x05;	//0000 0x0x
+	//Íâ²¿ÖĞ¶ÏÓÅÏÈ¼¶ÉèÖ
 	IE1 |= 0x08;	//0000 x000  INT2Ê¹ÄÜ
-	IP  |= 0X00;
 	IP1 |= 0X00;
 	EA = 1;
 }
 
-/*****************************************************
-*º¯ÊıÃû³Æ£ºvoid EX0/1/2() interrupt	0/2/10
-*º¯Êı¹¦ÄÜ£ºÖĞ¶Ï·şÎñº¯Êı
-*Èë¿Ú²ÎÊı£ºvoid
-*³ö¿Ú²ÎÊı£ºvoid
-*****************************************************/
-void EX0() interrupt	0
+void Zero_Crossing_EX2_Handle()
 {
-    P26 = ~P26;
+	//Èç¹ûÖĞ¶Ï2ÓĞÁ½Â·ÊäÈë£¬¸ù¾İÉÏÉıÑØ»òÕßÏÂ½µÑØÀ´È·ÈÏ£¬ÉÏÉıÑØÖĞ¶Ï£¬ËùÒÔ¶Ë¿ÚµçÆ½ÊÇ1
+    if(P20 == 1)
+    {
+        
+    }
+    if(P21 == 1) //INT25 P21 Ë®Á÷¼ì²â¼ÆÊı
+    {
+        
+    }
 }
-
-void EX1() interrupt	2
-{
-    P27 = ~P27;
-	if(P16 == 0)
-	{
-		INT1_flag = 0x10; //INT12²úÉúÖĞ¶Ï
-	}
-	if(P17 == 0)
-	{
-		INT1_flag = 0x20; //INT13²úÉúÖĞ¶Ï
-	}
-}
-
-void EX2() interrupt	10
-{
-    P26 = ~P26;
-}
-
-#endif
