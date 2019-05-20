@@ -5,7 +5,15 @@
 
 //INT24 P20
 
-//HEAT TRA PWM1
+//HEAT TRA PWM1 P01
+
+//HEAT RLY 继电器控制 P02
+
+//T/S1 温度保险 HEAT ERROR COM3/P03
+//如果检测到温度过高，T/S1会自动跳闸，断开电路 
+//继电器停止工作 保护整个可控硅驱动电路
+//HEAT ERROR 为输入端，如果等于高电平，表明热水器温度过高
+//如果为低电平，表明热水器温度在正常范围内
 
 void Zero_Crossing_EXTI_Test(void);
 void Zero_Crossing_EX_Init(void);
@@ -13,6 +21,8 @@ void Zero_Crossing_EX2_Handle();
 
 void Scr_Driver_PWM_Init(void);
 void Scr_Driver_PWMInt_Handle();
+int Scr_Driver_Check_Heat_Error();//检测温度保险
+void Scr_Driver_Control_Heat_RLY(int on);//继电器控制 HEAT RLY P02
 
 uchar Zero_Crossing_INT1_flag = 0x00;
 /*****************************************************
@@ -66,7 +76,7 @@ void Zero_Crossing_EX2_Handle()
     }
 }
 
-
+//HEAT TRA PWM1
 void Scr_Driver_PWM_Init(void)
 {
     //50hz 20ms 半个周期10ms 10ms/10=1ms PWM时钟为Fsys/128 187*128/24=997.33 187-1=186
@@ -83,4 +93,35 @@ void Scr_Driver_PWM_Init(void)
 void Scr_Driver_PWMInt_Handle()
 {
     //根据出水/进水温度自动调节PWM1的Duty
+}
+
+//检测温度保险 HEAT ERROR 直接检测端口值 P03
+int Scr_Driver_Check_Heat_Error()
+{
+	P0VO = P0VO&0xf7; //P03端口设置成普通I/O口
+	if(P03==0)
+	{
+		//温度正常范围内，温度保险不跳闸
+		return 1;
+	}
+	else if(P03==1)
+	{
+		//温度异常范围内，温度保险已跳闸
+		return 0;
+	}
+	return 0;
+}
+
+//继电器控制 HEAT RLY P02
+void Scr_Driver_Control_Heat_RLY(int on)
+{
+	P0VO = P0VO&0xfb; //P02端口设置成普通I/O口  1111 1011
+	if(on == 1)
+	{
+		P02=1;
+	}
+	else
+	{
+		P02=0;
+	}
 }

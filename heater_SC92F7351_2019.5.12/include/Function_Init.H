@@ -27,6 +27,8 @@ extern void Zero_Crossing_EX2_Handle();
 
 extern void Scr_Driver_PWM_Init(void);
 extern void Scr_Driver_PWMInt_Handle();
+extern int Scr_Driver_Check_Heat_Error();//检测温度保险
+extern void Scr_Driver_Control_Heat_RLY(int on);//继电器控制 HEAT RLY P02
 
 /*****************************************
 说明：选择测试IC
