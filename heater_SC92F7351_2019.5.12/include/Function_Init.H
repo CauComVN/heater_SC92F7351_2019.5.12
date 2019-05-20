@@ -25,6 +25,9 @@ extern void Water_Detection_Timer0_Handle();
 extern void Zero_Crossing_EXTI_Test(void);
 extern void Zero_Crossing_EX2_Handle();
 
+extern void Scr_Driver_PWM_Init(void);
+extern void Scr_Driver_PWMInt_Handle();
+
 /*****************************************
 ËµÃ÷£ºÑ¡Ôñ²âÊÔIC
 *****************************************/

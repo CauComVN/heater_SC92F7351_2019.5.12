@@ -55,8 +55,8 @@ void Water_Detection_EX_Init(void)
 
 void Water_Detection_EX2_Handle()
 {
-	IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
-	
+    IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
+
     //中断2有两路输入，需要区分 ？？？
     number++; //霍尔水流传感器->外部中断计数
 
@@ -69,8 +69,8 @@ void Water_Detection_EX2_Handle()
     {
         Water_Detection_INT2_Flag = 0x20; //INT13产生中断
     }
-	
-	IE1 |= 0x08;	//0000 x000  INT2使能
+
+    IE1 |= 0x08;	//0000 x000  INT2使能
 }
 
 //////////////////////////////////////////////////////////////
@@ -96,18 +96,18 @@ void Water_Detection_Timer_Test(void)
 *****************************************************/
 void Water_Detection_Timer_Init(void)
 {
-	water_flow_flag = 0; //无水流
-	
-	TMCON = 0X01;    //------001 ;Timer0选择时钟Fsys
+    water_flow_flag = 0; //无水流
+
+    TMCON = 0X01;    //------001 ;Timer0选择时钟Fsys
 
     //T0设置
     TMOD |= 0x01;                 //0000 0001;Timer0设置工作方式1
     TL0 = (65536 - 24000)%256;    //溢出时间：时钟为Fsys，则24000*（1/Fsys）=1ms;
     TH0 = (65536 - 24000)/256;
-	
+
 //	TL0 = (65536 - 48000)%256;    //溢出时间：时钟为Fsys，则48000*（1/Fsys）=2ms;
 //  TH0 = (65536 - 48000)/256;
-//	
+//
     TR0 = 0;
     ET0 = 1;//定时器0允许
     TR0 = 1;//打开定时器0
@@ -117,26 +117,26 @@ void Water_Detection_Timer_Init(void)
 
 void Water_Detection_Timer0_Handle()
 {
-	//    TL0 = (65536 - 24000)%256;
+    //    TL0 = (65536 - 24000)%256;
 //	TH0 = (65536 - 24000)/256;
 //	P02 = ~P02;
-	
-	//根据仿真确认阈值
-	unsigned int threshold=100; //??????
+
+    //根据仿真确认阈值
+    unsigned int threshold=100; //??????
 
     //定时到，关闭中断，统计霍尔水流传感器->外部中断计数，分析水流 ???
-	EA = 0;
-	
-	IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
-	TR0=0; //关闭定时器0
-		
-	if(number > threshold){
-		water_flow_flag = 1; //有水流
-	}
-	else{
-		water_flow_flag = 0; //无水流
-	}
-	
-	//霍尔水流传感器->外部中断计数清零
-	number=0;
+    EA = 0;
+
+    IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
+    TR0=0; //关闭定时器0
+
+    if(number > threshold) {
+        water_flow_flag = 1; //有水流
+    }
+    else {
+        water_flow_flag = 0; //无水流
+    }
+
+    //霍尔水流传感器->外部中断计数清零
+    number=0;
 }

@@ -5,9 +5,14 @@
 
 //INT24 P20
 
+//HEAT TRA PWM1
+
 void Zero_Crossing_EXTI_Test(void);
 void Zero_Crossing_EX_Init(void);
 void Zero_Crossing_EX2_Handle();
+
+void Scr_Driver_PWM_Init(void);
+void Scr_Driver_PWMInt_Handle();
 
 uchar Zero_Crossing_INT1_flag = 0x00;
 /*****************************************************
@@ -18,10 +23,10 @@ uchar Zero_Crossing_INT1_flag = 0x00;
 *****************************************************/
 void Zero_Crossing_EXTI_Test(void)
 {
-	Zero_Crossing_EX_Init();
-	while(1)
-	{					
-	}
+    Zero_Crossing_EX_Init();
+    while(1)
+    {
+    }
 }
 /*****************************************************
 *º¯ÊýÃû³Æ£ºvoid EX_Init(void)
@@ -30,32 +35,52 @@ void Zero_Crossing_EXTI_Test(void)
 *³ö¿Ú²ÎÊý£ºvoid
 *****************************************************/
 void Zero_Crossing_EX_Init(void)
-{	
-	//ÅäÖÃÖÐ¶Ï¿ÚINT24
-	P2CON &= 0XFE;     //ÖÐ¶ÏIO¿ÚÉèÖÃÎª¸ß×èÊäÈë
-	P2PH  |= 0x01;     //ÖÐ¶ÏIO¿ÚÉèÖÃÎª¸ß×è´øÉÏÀ­
- 
-	//INT24ÉÏÉýÖÐ¶Ï
+{
+    //ÅäÖÃÖÐ¶Ï¿ÚINT24
+    P2CON &= 0XFE;     //ÖÐ¶ÏIO¿ÚÉèÖÃÎª¸ß×èÊäÈë
+    P2PH  |= 0x01;     //ÖÐ¶ÏIO¿ÚÉèÖÃÎª¸ß×è´øÉÏÀ­
+
+    //INT24ÉÏÉýÖÐ¶Ï
     //ÏÂ½µÑØÉèÖÃ
     INT2F = 0X00 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
     //ÉÏÉýÑØÉèÖÃ
-	INT2R = 0X10 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ	
-	
-	//Íâ²¿ÖÐ¶ÏÓÅÏÈ¼¶ÉèÖ
-	IE1 |= 0x08;	//0000 x000  INT2Ê¹ÄÜ
-	IP1 |= 0X00;
-	EA = 1;
+    INT2R = 0X10 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
+
+    //Íâ²¿ÖÐ¶ÏÓÅÏÈ¼¶ÉèÖ
+    IE1 |= 0x08;	//0000 x000  INT2Ê¹ÄÜ
+    IP1 |= 0X00;
+    EA = 1;
 }
 
 void Zero_Crossing_EX2_Handle()
 {
-	//Èç¹ûÖÐ¶Ï2ÓÐÁ½Â·ÊäÈë£¬¸ù¾ÝÉÏÉýÑØ»òÕßÏÂ½µÑØÀ´È·ÈÏ£¬ÉÏÉýÑØÖÐ¶Ï£¬ËùÒÔ¶Ë¿ÚµçÆ½ÊÇ1
-    if(P20 == 1)
+    //Èç¹ûÖÐ¶Ï2ÓÐÁ½Â·ÊäÈë£¬¸ù¾ÝÉÏÉýÑØ»òÕßÏÂ½µÑØÀ´È·ÈÏ£¬ÉÏÉýÑØÖÐ¶Ï£¬ËùÒÔ¶Ë¿ÚµçÆ½ÊÇ1
+    if(P20 == 1) //INT24 P20 ¹ýÁã¼ì²âµ½Áãµã
     {
-        
+        //PWM¼ÆÊýÖµÖØÖÃ
+        Scr_Driver_PWM_Init();
     }
     if(P21 == 1) //INT25 P21 Ë®Á÷¼ì²â¼ÆÊý
     {
-        
+
     }
+}
+
+
+void Scr_Driver_PWM_Init(void)
+{
+    //50hz 20ms °ë¸öÖÜÆÚ10ms 10ms/10=1ms PWMÊ±ÖÓÎªFsys/128 187*128/24=997.33 187-1=186
+    PWMCON  = 0x16;		//PWMÊä³öµ½IO£¬PWMÊ±ÖÓÎªFsys/128 HEAT TRA PWM1
+    PWMPRD  = 186;		//PWMÖÜÆÚ=(186+1)*(1*128/24us)=997.33¡Ö=1ms;
+    PWMCFG  = 0x10;		//PWM1Êä³ö·´Ïò,Êä³öÖÁP01
+    PWMDTY1 = 15;     //PWM1µÄDuty = 15/60 =1/4
+    PWMDTYA = 0x00;		//PWMÕ¼¿Õ±ÈÎ¢µ÷¼Ä´æÆ÷£¬ÕâÀï²»Î¢µ÷
+    PWMCON |= 0x80;     //¿ªÆôPWM
+    IE1 |= 0x02;        //¿ªÆôPWMÖÐ¶Ï
+    EA = 1;
+}
+
+void Scr_Driver_PWMInt_Handle()
+{
+    //¸ù¾Ý³öË®/½øË®ÎÂ¶È×Ô¶¯µ÷½ÚPWM1µÄDuty
 }
