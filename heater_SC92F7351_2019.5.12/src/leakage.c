@@ -9,8 +9,6 @@ void Leakage_EXTI_Test(void);
 void Leakage_EX_Init(void);
 void Leakage_EX0_Handle(void);
 
-uchar Leakage_INT2_flag = 0x00;
-uchar Leakage_INT00_flag = 0x00;
 /*****************************************************
 *函数名称：void Leakage_EXTI_Test(void)
 *函数功能：外部中断测试
@@ -32,7 +30,7 @@ void Leakage_EXTI_Test(void)
 *****************************************************/
 void Leakage_EX_Init(void)
 {	
-	//配置中断口INT00
+	//配置中断口INT00 P10
 	P1CON &= 0XFE;     //中断IO口设置为高阻输入
 	P1PH  |= 0x01;     //中断IO口设置为高阻带上拉
  
@@ -55,6 +53,7 @@ void Leakage_EX0_Handle(void)
 	//并且大于20ms，则漏电条件成立
 	if(P10 == 1)
 	{
-		Leakage_INT00_flag = 0x01;
+		//设置漏电检测异常标志
+		Heater_Exception_Flag = Heater_Exception_Leakage;
 	}
 }

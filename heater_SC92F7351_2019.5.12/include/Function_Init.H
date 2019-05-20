@@ -9,6 +9,17 @@
 #define IapROM  0x00	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 #define IapEPPROM  0x02	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 
+//热水器内部异常状态
+typedef enum Heater_Exception
+{
+	Heater_Exception_Normal=0,
+	Heater_Exception_Leakage,
+	
+}Enum_Heater_Exception_Flag;
+ 
+volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
+
+
 extern void ADC_Test(void);
 extern int ADC_Convert(void);
 extern void ADC_channel(unsigned char channel);
