@@ -16,9 +16,9 @@ typedef enum Heater_Exception
 	Heater_Exception_Leakage,
 	
 }Enum_Heater_Exception_Flag;
- 
-volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
+extern volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
+ 
 
 extern void ADC_Test(void);
 extern int ADC_Convert(void);
@@ -26,6 +26,7 @@ extern void ADC_channel(unsigned char channel);
 extern void ADC_Interrupt_Handle(void);
 
 extern void Leakage_EXTI_Test(void);
+extern void Leakage_EX_Init(void);
 extern void Leakage_EX0_Handle(void);
 
 extern void Water_Detection_EXTI_Test(void);
