@@ -79,6 +79,7 @@ void ADC_Interrupt_Handle(void)
 }
 
 ////////////////////////////////////////////////////////////
+//二分法查表 0度 ~ 100度 电阻值从大到小逆序 对应温度值从小到大顺序
 int search(uint arry[],uint n,uint key)
 {
     uint low = 0,high = n-1; // n个数据 -1，high不能超数组元素个数的上限；
@@ -93,7 +94,7 @@ int search(uint arry[],uint n,uint key)
         mid = (low+high)/2;
         if( key<=arry[mid] && key >= arry[mid+1] )
             return mid;
-        if(arry[mid]<key)
+        if(key<arry[mid])
             low = mid + 1;
         else
             high = mid - 1;
@@ -103,7 +104,7 @@ int search(uint arry[],uint n,uint key)
 
 int get_temperature_from_table(uint nADValue, float* fTemperature)
 {
-    uint Rntc=50;
+    uint Rntc=25;
 
     //计算电阻公式 x/c=Rntc/(Rup+Rntc)
     //c:如果ADC采集精度为N bit，对应满量程值为c值 2^N=c，主控芯片12位ADC， 2(12)=4096  5v=5v;

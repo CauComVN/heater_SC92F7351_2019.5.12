@@ -1,7 +1,7 @@
 #ifndef _ADC_H_
 #define _ADC_H_
 
-//NTC-50K-3950-阻值表及AD值 RES: 0C~100C, 上拉10K AD值，用手册对照AD值
+//NTC-50K-3950-阻值表及AD值 RES: 1C~100C, 上拉10K AD值，用手册对照AD值
 unsigned int code bufTable_NTC_R[]=
    {
   165,

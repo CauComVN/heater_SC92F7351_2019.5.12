@@ -53,3 +53,28 @@ B值是热敏电阻的重要参数
 来源：CSDN 
 原文：https://blog.csdn.net/yangyang_1024/article/details/80563522 
 版权声明：本文为博主原创文章，转载请附上博文链接！
+
+
+KEIL C51编译器所支持的数据类型
+
+数据类型	长度	值域
+unsigned char	单字节	0~255
+signed char	单字节	-128～+127
+unsigned int	双字节	0～65535
+signed int	双字节	-32768～+32767
+unsigned short	双字节	0～65535
+signed short	双字节	-32768～+32767
+unsigned long	四字节	0～4294967295
+signed long	四字节	-2147483648～+2147483647
+float	四字节	±1.175494E-38～±3.402823E+38
+double	四字节	±1.175494E-38～±3.402823E+38
+*	1～3字节	对象的地址
+bit	位	0或1
+sfr	单字节	0～255
+sfr16	双字节	0～65535
+sbit	可寻址位	0或1
+--------------------- 
+作者：grant_alliswell 
+来源：CSDN 
+原文：https://blog.csdn.net/kkdl1990/article/details/50390404 
+版权声明：本文为博主原创文章，转载请附上博文链接！
