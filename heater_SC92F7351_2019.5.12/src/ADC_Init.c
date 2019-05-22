@@ -35,20 +35,20 @@ void ADC_Test(void)
     int t8=0.0,t9=0.0;
     int ret =0;
     float fTemperature=26.0;
-		int flag=0;
+    int flag=0;
 
     while(1)
     {
         //ADC_Init(AIN9);
-				//t9=ADC_Convert(); //启动ADC转换，获得转换值
-				//ret = get_temperature_from_table(t9,&fTemperature);
+        //t9=ADC_Convert(); //启动ADC转换，获得转换值
+        //ret = get_temperature_from_table(t9,&fTemperature);
 
         ADC_Init(AIN8);
         t8=ADC_Convert(); //启动ADC转换，获得转换值
         ret = get_temperature_from_table(t8,&fTemperature);
-			
-				flag=1;
-				
+
+        flag=1;
+
     }
 }
 /*****************************************************
@@ -74,7 +74,7 @@ void ADC_Init(uint Channel)
 
 void ADC_Interrupt_Handle(void)
 {
-	ADCCON &= ~(0X10);  //清中断标志位
+    ADCCON &= ~(0X10);  //清中断标志位
     AdcFlag = 1;
 }
 
@@ -84,14 +84,14 @@ int search(uint arry[],uint n,uint key)
     uint low = 0,high = n-1; // n个数据 -1，high不能超数组元素个数的上限；
     uint mid,count=0;
 
-    if( key>=arry[high] )
+    if( key<=arry[high] )
         return high;
-    if( key<=arry[low] )
+    if( key>=arry[low] )
         return low;
     while(low<=high)
     {
         mid = (low+high)/2;
-        if( key>=arry[mid] && key <= arry[mid+1] )
+        if( key<=arry[mid] && key >= arry[mid+1] )
             return mid;
         if(arry[mid]<key)
             low = mid + 1;
@@ -103,22 +103,29 @@ int search(uint arry[],uint n,uint key)
 
 int get_temperature_from_table(uint nADValue, float* fTemperature)
 {
-    if(nADValue>=NTC_AD_VALUE_MAX)
+    uint Rntc=50;
+
+    //计算电阻公式 x/c=Rntc/(Rup+Rntc)
+    //c:如果ADC采集精度为N bit，对应满量程值为c值 2^N=c，主控芯片12位ADC， 2(12)=4096  5v=5v;
+    //x:ADC采集值 x=TempAdd
+    //Rup:上拉电阻值 10k
+    Rntc=(uint)(10.0*nADValue/(4096-nADValue));//10000*TempAdd/(4096-TempAdd)/1000;
+
+    if(Rntc>=NTC_R_VALUE_MAX)
     {
-        //通知检测温度异常，发送主板BEEP报警
-        return -1;
-    }
-    else if(nADValue<=NTC_AD_VALUE_MIN)
+        //通知检测温度异常，超过最低温度，发送主板BEEP报警
+    }		
+    else if(Rntc<=NTC_R_VALUE_MIN)
     {
-        //通知检测温度异常，发送主板BEEP报警
-        return 0;
+        //通知检测温度异常，超过最高温度发送主板BEEP报警
     }
     else
     {
-        *fTemperature =search(bufTable_NTC_AD, sizeof(bufTable_NTC_AD)/2,	111);
-
+        *fTemperature =search(bufTable_NTC_R, sizeof(bufTable_NTC_R)/2,	Rntc);
         return 1;
     }
+		
+    return 0;
 }
 
 
@@ -132,7 +139,8 @@ int get_temperature_from_table(uint nADValue, float* fTemperature)
 *****************************************************/
 int ADC_Convert(void)
 {
-
+    float volta = 0.0;
+    int Rntc=50000;
     uint Tad=0;
     uint MinAd=0x0fff,MaxAd=0x0000,TempAdd=0;
     uchar t=0;
@@ -163,9 +171,11 @@ int ADC_Convert(void)
     //TempAdd=TempAdd/4; //求平均值
     TempAdd>>=2; //求平均值，如果检测7次，去掉3次，变为4，4是2次方，所以右移2
 
-    //12位ADC 2(12)=4096  5v=5v;
-    //volta=(float)TempAdd*5/4095;
-    //Rt = 10000*volta/(5-volta); //热敏电阻阻值
+    //计算电阻公式 x/c=Rntc/(Rup+Rntc)
+    //c:如果ADC采集精度为N bit，对应满量程值为c值 2^N=c，主控芯片12位ADC， 2(12)=4096  5v=5v;
+    //x:ADC采集值 x=TempAdd
+    //Rup:上拉电阻值 10k
+    //Rntc=10*TempAdd/(4096-TempAdd);//10000*TempAdd/(4096-TempAdd)/1000;
 
     return TempAdd;
 }
@@ -196,28 +206,13 @@ int ADC_Convert(void)
 
 //    //写公式（电压转换，电阻转换，温度转换）
 //    //12位ADC 2(12)=4096  5v=5v;
-//    volta=(float)nADValue*5.0/4095;
-
-//    if((5.0-volta)> 0.01) {
-//        Rt = (float)(Rp*volta)/(5.0-volta);
-
-//        ret=(1.0/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
-
-//        //RES: -10C~100C
-//        if(ret>100 && ret<-10)
-//        {
-//            *fTemperature = ret;
-//            return 1;
-//        }
-//        else
-//        {
-//            return 0;
-//        }
-//    }
-//    else
-//    {
-//        return 0;
-//    }
+//		//计算电阻公式 x/c=Rntc/(Rup+Rntc)
+//    //c:如果ADC采集精度为N bit，对应满量程值为c值 2^N=c，主控芯片12位ADC， 2(12)=4096  5v=5v;
+//    //x:ADC采集值 x=TempAdd
+//    //Rup:上拉电阻值 10k
+//    Rt=10*TempAdd/(4096-TempAdd);//10000*TempAdd/(4096-TempAdd)/1000;
+//    ret=(1.0/(log(Rt/R)/Bx+(1/T2)))-273.15+0.5;
+//    *fTemperature = ret;
 //}
 
 

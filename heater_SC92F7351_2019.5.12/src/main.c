@@ -22,12 +22,15 @@ int Start_Heater();
 int Stop_Heater();
 
 void main(void)
-{
+{	
 		int AppStatus=-1;  //1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制
 
     int ret=0;
     int test_relay_on=1; //继电器动作，热水器开始工作
-    WDTCON |= 0x10;		    //清看门狗
+    
+	
+		IO_Init();
+		WDTCON |= 0x10;		    //清看门狗
 
     //测试。。。
     if(AppStatus<0) {

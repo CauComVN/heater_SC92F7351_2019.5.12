@@ -18,7 +18,8 @@ typedef enum Heater_Exception
 }Enum_Heater_Exception_Flag;
 
 extern volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
- 
+
+extern void IO_Init(void);
 
 extern void ADC_Test(void);
 extern int ADC_Convert(void);
