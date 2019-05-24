@@ -38,8 +38,9 @@ void Water_Detection_EXTI_Test(void)
 void Water_Detection_EX_Init(void)
 {
     //配置中断口25
-    P2CON &= 0XFD;     //中断IO口设置为高阻输入
-    P2PH  |= 0x02;     //中断IO口设置为高阻带上拉
+    P2CON &= 0Xdf;     //中断IO口设置为高阻输入
+    P2PH  |= 0x20;     //中断IO口设置为高阻带上拉			    
+		//P2PH  &= 0XFD; //高阻输入模式，上拉电阻关闭
 
     //配置INT25下降沿中断
     //下降沿设置
