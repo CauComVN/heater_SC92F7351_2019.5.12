@@ -426,6 +426,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\IO_Init.c</FilePath>
             </File>
+            <File>
+              <FileName>Uart_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\Uart_Init.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

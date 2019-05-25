@@ -57,6 +57,8 @@ void main(void)
         case -7:
             Scr_Driver_Control_Heat_RLY(test_relay_on);//¼ÌµçÆ÷¿ØÖÆ HEAT RLY P02
             break;
+				case -8:
+					Scr_Driver_PWM_Init();
         default:
             break;
         }

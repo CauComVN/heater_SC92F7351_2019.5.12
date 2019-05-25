@@ -64,6 +64,7 @@ void Zero_Crossing_EX_Init(void)
 
 void Zero_Crossing_EX2_Handle()
 {
+	/*
     //如果中断2有两路输入，根据上升沿或者下降沿来确认，上升沿中断，所以端口电平是1
     if(P20 == 1) //INT24 P20 过零检测到零点
     {
@@ -74,11 +75,13 @@ void Zero_Crossing_EX2_Handle()
     {
 
     }
+	*/
 }
 
 //HEAT TRA PWM1
 void Scr_Driver_PWM_Init(void)
 {
+	/**/
     //50hz 20ms 半个周期10ms 10ms/10=1ms PWM时钟为Fsys/128 187*128/24=997.33 187-1=186
     PWMCON  = 0x16;		//PWM输出到IO，PWM时钟为Fsys/128 HEAT TRA PWM1
     PWMPRD  = 186;		//PWM周期=(186+1)*(1*128/24us)=997.33≈=1ms;
@@ -88,6 +91,7 @@ void Scr_Driver_PWM_Init(void)
     PWMCON |= 0x80;     //开启PWM
     IE1 |= 0x02;        //开启PWM中断
     EA = 1;
+	
 }
 
 void Scr_Driver_PWMInt_Handle()

@@ -12,6 +12,13 @@ void EX0_Interrupt() interrupt	0
 
 void EX2_Interrupt() interrupt	10
 {
+	static int s_flag=0;
+	if(s_flag==0){
+	Uart0_Test();
+		s_flag=1;
+	}
+	
+	if(1){
 	if(!(P2CON&0x02) && (P21==1) ){		
 		//INT25 端口P21 上升沿中断 P21=1
     Water_Detection_EX2_Handle();
@@ -20,6 +27,9 @@ void EX2_Interrupt() interrupt	10
 	//INT24 端口P20 上升沿中断 P20=1
     Zero_Crossing_EX2_Handle();
 	}
+}
+	
+	
 }
 
 void Timer0_Interrupt() interrupt 1

@@ -56,6 +56,7 @@ void Water_Detection_EX_Init(void)
 
 void Water_Detection_EX2_Handle()
 {
+	/*
     IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
 
     //中断2有两路输入，需要区分 ？？？
@@ -72,6 +73,7 @@ void Water_Detection_EX2_Handle()
     }
 
     IE1 |= 0x08;	//0000 x000  INT2使能
+	*/
 }
 
 //////////////////////////////////////////////////////////////
