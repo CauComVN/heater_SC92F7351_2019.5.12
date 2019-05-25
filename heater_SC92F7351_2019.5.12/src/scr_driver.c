@@ -64,14 +64,14 @@ void Zero_Crossing_EX_Init(void)
 
 void Zero_Crossing_EX2_Handle()
 {
-	/*
+	
     //如果中断2有两路输入，根据上升沿或者下降沿来确认，上升沿中断，所以端口电平是1
     if(P20 == 1) //INT24 P20 过零检测到零点
     {
         //PWM计数值重置
         Scr_Driver_PWM_Init();
     }
-    if(P21 == 1) //INT25 P21 水流检测计数
+ /*   if(P21 == 1) //INT25 P21 水流检测计数
     {
 
     }
