@@ -56,24 +56,24 @@ void Water_Detection_EX_Init(void)
 
 void Water_Detection_EX2_Handle()
 {
-	/*
+	/**/
     IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
 
     //中断2有两路输入，需要区分 ？？？
     number++; //霍尔水流传感器->外部中断计数
 
     //如果中断2有两路输入，根据上升沿或者下降沿来确认，这里是下降沿
-    if(P20 == 0)
-    {
-        Water_Detection_INT2_Flag = 0x10; //INT12产生中断
-    }
-    if(P21 == 0) //INT25 P21 水流检测计数
+//    if(P20 == 1)
+//    {
+//        //Water_Detection_INT2_Flag = 0x10; //INT12产生中断
+//    }
+    if(P21 == 1) //INT25 P21 水流检测计数
     {
         Water_Detection_INT2_Flag = 0x20; //INT13产生中断
     }
 
     IE1 |= 0x08;	//0000 x000  INT2使能
-	*/
+	
 }
 
 //////////////////////////////////////////////////////////////

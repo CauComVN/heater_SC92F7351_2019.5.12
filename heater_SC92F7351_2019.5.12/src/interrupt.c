@@ -12,12 +12,12 @@ void EX0_Interrupt() interrupt	0
 
 void EX2_Interrupt() interrupt	10
 {
-	static int s_flag=0;
-	if(s_flag==0){
-	Uart0_Test();
-		s_flag=1;
-	}
-	
+//	static int s_flag=0;
+//	if(s_flag==0){
+//	Uart0_Test();
+//		s_flag=1;
+//	}
+//	
 	if(1){
 	if(!(P2CON&0x02) && (P21==1) ){		
 		//INT25 ¶Ë¿ÚP21 ÉÏÉıÑØÖĞ¶Ï P21=1
