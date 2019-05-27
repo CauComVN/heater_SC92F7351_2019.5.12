@@ -6,7 +6,7 @@
 2、改变TEST的定义，可以分别测试对应的功能；
 3、注意：先在Function.H里面选择测试型号（SC92F7320无LCD/LED和PWM功能）
 ***************************************************************/
-#define Test  1    //BTM:0 EXTI:1 Timer:2 LCD:3 PWM:4 Uart0:5 ADC:7 IAP:8 
+#define Test  5    //BTM:0 EXTI:1 Timer:2 LCD:3 PWM:4 Uart0:5 ADC:7 IAP:8 
 
 void main(void)
 {

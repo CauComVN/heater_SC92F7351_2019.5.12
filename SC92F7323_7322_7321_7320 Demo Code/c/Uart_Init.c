@@ -1,8 +1,26 @@
 #include "H/Function_Init.H" 
+#include "stdio.h"
 
+#define UART0_BUFF_LENGTH	  7	//UART0接受缓冲区的容量（Byte) 00001 \0
+uchar Uart0BuffNumber=0;
+uchar Uart0Buff[UART0_BUFF_LENGTH];
+//void Uart_SendString(unsigned char *str,unsigned char strlen);
+
+void UART_SentChar(uchar chr);
+void UART_SendString(uchar *str);
+	
 void Uart0_Init(void);
 bit UartSendFlag = 0; //发送中断标志位
 bit UartReceiveFlag = 0; //接收中断标志位
+
+char putchar(char c)//用于重写printf
+{
+	SBUF = c;
+	while(!UartSendFlag);
+	UartSendFlag=0;
+	return c;
+}
+
 /*****************************************************
 *函数名称：void Uart0_Test(void)
 *函数功能：Uart0测试
@@ -11,12 +29,27 @@ bit UartReceiveFlag = 0; //接收中断标志位
 *****************************************************/
 void Uart0_Test(void)
 {
+	Uart0BuffNumber = 0;
+	
 	Uart0_Init();
 	while(1)
 	{
+		/*
 		SBUF = 0x55;
 		while(!UartSendFlag);
 		UartSendFlag = 0;
+		*/
+		
+		//Uart_SendString("00001",UART0_BUFF_LENGTH);
+		printf("00100\n");
+		
+		if(Uart0BuffNumber>=(UART0_BUFF_LENGTH-1))				//接收计数
+	  {	    
+			//Uart_SendString(Uart0Buff,UART0_BUFF_LENGTH);		
+			Uart_SendString(Uart0Buff);
+			//用户可以在这期间执行其他代码			
+			Uart0BuffNumber=0	;				 //将缓冲数组指向开始
+	  }
 	}
 }
 /*****************************************************
@@ -82,5 +115,40 @@ void UartInt(void) interrupt 4
 	{
 		RI = 0;	
 		UartReceiveFlag = 1;
+		
+		Uart0Buff[Uart0BuffNumber] = SBUF; //将接收的数据存入缓冲区
+		Uart0BuffNumber++;
 	}	
 }
+
+
+void UART_SentChar(uchar chr)
+{
+      //发送一个字节
+  SBUF = chr;
+  while( TI == 0);
+  TI = 0;
+}
+void UART_SendString(uchar *str)
+{
+  while(*str != '\0')
+  {
+      UART_SentChar(*str++);
+  }
+}
+//--------------------- 
+//作者：qq_41549389 
+//来源：CSDN 
+//原文：https://blog.csdn.net/qq_41549389/article/details/80742032 
+//版权声明：本文为博主原创文章，转载请附上博文链接！
+
+//void Uart_SendString(unsigned char *str,unsigned char strlen)
+//{
+//  unsigned char i; 
+//	for(i=0;i<strlen;i++)
+//	{
+//	   SBUF = *(str++);
+//	   while(!UartSendFlag);
+//	   UartSendFlag=0;
+//	} 
+//}
