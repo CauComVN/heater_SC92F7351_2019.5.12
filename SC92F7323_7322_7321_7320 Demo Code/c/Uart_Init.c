@@ -46,7 +46,7 @@ void Uart0_Test(void)
 		if(Uart0BuffNumber>=(UART0_BUFF_LENGTH-1))				//接收计数
 	  {	    
 			//Uart_SendString(Uart0Buff,UART0_BUFF_LENGTH);		
-			Uart_SendString(Uart0Buff);
+			UART_SendString(Uart0Buff);
 			//用户可以在这期间执行其他代码			
 			Uart0BuffNumber=0	;				 //将缓冲数组指向开始
 	  }
