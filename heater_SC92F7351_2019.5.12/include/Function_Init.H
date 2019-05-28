@@ -9,21 +9,46 @@
 #define IapROM  0x00	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 #define IapEPPROM  0x02	  //0x00：选择ROM区操作  0x02：选择EEPROM区操作
 
+/***********SC92F7321 ADC采样口选择*************/
+enum Channel {AIN0=0,AIN1,AIN2,AIN3,AIN8=8,AIN9,VDD4=15};
+
+//下位机热水器通信协议
+extern uchar Protocol_Heater_Default;			//初始值
+extern uchar Protocol_Heater_Start; 			//启动热水器
+extern uchar Protocol_Heater_Stop; 				//停止热水器
+extern uchar Protocol_Heater_Increases_Power;			//热水器增加功率
+extern uchar Protocol_Heater_Reduce_Power;				//热水器减少功率
+
+//下位机热水器通信协议接收到的命令协议数据
+extern volatile uchar Protocol_Heater_Receive_Data;
+
+//当前热水器运行或停止状态 继电器动作 0：停止 1：运行
+extern volatile bit heater_relay_on;
+
+
 //热水器内部异常状态
 typedef enum Heater_Exception
 {
-	Heater_Exception_Normal=0,
-	Heater_Exception_Leakage,
-	
-}Enum_Heater_Exception_Flag;
+    Heater_Ex_Normal=0,
+    Heater_Ex_Leakage,
+    Heater_Ex_In_Water_Temp_Low,
+    Heater_Ex_In_Water_Temp_High,
+    Heater_Ex_Out_Water_Temp_Low,
+    Heater_Ex_Out_Water_Temp_High,
+		Heater_Ex_Water_No_Flow,
+		Heater_Ex_Water_Little_Flow,
+} Enum_Heater_Exception_Flag;
 
+//热水器内部异常状态
 extern volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
 extern void IO_Init(void);
 
 extern void ADC_Test(void);
+extern void ADC_Init(uint Channel);
 extern int ADC_Convert(void);
 extern void ADC_channel(unsigned char channel);
+extern int get_temperature_from_table(uint nADValue, int* temperature);
 extern void ADC_Interrupt_Handle(void);
 
 extern void Leakage_EXTI_Test(void);
@@ -32,6 +57,8 @@ extern void Leakage_EX0_Handle(void);
 
 extern void Water_Detection_EXTI_Test(void);
 extern void Water_Detection_Timer_Test(void);
+extern void Water_Detection_EX_Init(void);
+extern void Water_Detection_Timer_Init(void);
 extern void Water_Detection_EX2_Handle();
 extern void Water_Detection_Timer0_Handle();
 
@@ -45,6 +72,7 @@ extern void Scr_Driver_Control_Heat_RLY(int on);//继电器控制 HEAT RLY P02
 
 extern void Uart0_Init(void);
 extern void Uart0_Test(void);
+extern void UART_SentChar(uchar chr);
 
 /*****************************************
 说明：选择测试IC

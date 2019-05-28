@@ -8,9 +8,9 @@ int ADC_Convert(void);
 void ADC_channel(unsigned char channel);
 void ADC_Interrupt_Handle(void);
 
-int get_temperature_from_table(uint nADValue, float* fTemperature);
+int get_temperature_from_table(uint nADValue, int* temperature);
 
-unsigned int ADCValue = 0x0000;
+uint ADCValue = 0x0000;
 bit AdcFlag = 0;
 
 ////////////////////////////////////////////////////////////
@@ -21,9 +21,6 @@ bit AdcFlag = 0;
 //连续多次采样转换，设置要等于或大于7
 float ADC_Value0,ADC_Value1,ADC_Value2;
 
-/***********SC92F7351 ADC采样口选择*************/
-enum Channel {AIN0=0,AIN1,AIN4=4,AIN5,AIN8=8,AIN9,VDD4=15};
-
 /*****************************************************
 *函数名称：void ADC_Test(void)
 *函数功能：ADC测试
@@ -32,23 +29,24 @@ enum Channel {AIN0=0,AIN1,AIN4=4,AIN5,AIN8=8,AIN9,VDD4=15};
 *****************************************************/
 void ADC_Test(void)
 {
-    int t8=0.0,t9=0.0;
+    int t8=0,t9=0;
     int ret =0;
-    float fTemperature=26.0;
+    int temperature=26;
     int flag=0;
 
     while(1)
     {
+        //进水温度
         //ADC_Init(AIN9);
         //t9=ADC_Convert(); //启动ADC转换，获得转换值
-        //ret = get_temperature_from_table(t9,&fTemperature);
+        //ret = get_temperature_from_table(t9,&temperature);
 
+        //出水温度
         ADC_Init(AIN8);
         t8=ADC_Convert(); //启动ADC转换，获得转换值
-        ret = get_temperature_from_table(t8,&fTemperature);
+        ret = get_temperature_from_table(t8,&temperature);
 
         flag=1;
-
     }
 }
 /*****************************************************
@@ -102,7 +100,7 @@ int search(uint arry[],uint n,uint key)
     return 0;
 }
 
-int get_temperature_from_table(uint nADValue, float* fTemperature)
+int get_temperature_from_table(uint nADValue, int* temperature)
 {
     uint Rntc=25;
 
@@ -115,18 +113,19 @@ int get_temperature_from_table(uint nADValue, float* fTemperature)
     if(Rntc>=NTC_R_VALUE_MAX)
     {
         //通知检测温度异常，超过最低温度，发送主板BEEP报警
-    }		
+        return -1;
+
+    }
     else if(Rntc<=NTC_R_VALUE_MIN)
     {
         //通知检测温度异常，超过最高温度发送主板BEEP报警
+        return -2;
     }
     else
     {
-        *fTemperature =search(bufTable_NTC_R, sizeof(bufTable_NTC_R)/2,	Rntc);
-        return 1;
+        *temperature =search(bufTable_NTC_R, sizeof(bufTable_NTC_R)/2,	Rntc);
+        return 0;
     }
-		
-    return 0;
 }
 
 

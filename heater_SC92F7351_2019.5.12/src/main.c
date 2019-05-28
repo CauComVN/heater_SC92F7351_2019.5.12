@@ -6,32 +6,21 @@
 2、改变TEST的定义，可以分别测试对应的功能；
 3、注意：先在Function.H里面选择测试型号（SC92F7320无LCD/LED和PWM功能）
 ***************************************************************/
-//int AppStatus=-1;  //1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制
-
-//启动或停止热水器，主控板通过串口发送指令
-int Heater_Control_Flag=1;
-//当前热水器运行或停止状态 0：停止 1：运行
-int Heater_Current_Flag=0;
-
-volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
-
-
-//启动热水器
-int Start_Heater();
-//停止热水器
-int Stop_Heater();
 
 void main(void)
-{	
-		int AppStatus=-2;  //1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制
+{
+    int AppStatus=1;  //1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制 -8：PWM测试 -9：串口发送
 
     int ret=0;
     int test_relay_on=1; //继电器动作，热水器开始工作
-	  int relay_on=1;///开启热水器
-    
 	
-		IO_Init();
-		WDTCON |= 0x10;		    //清看门狗
+		uint nADWtrTempValue=0;
+		int water_temperature_in=26;
+		int water_temperature_out=26;
+		
+
+    IO_Init();
+    WDTCON |= 0x10;		    //清看门狗
 
     //测试。。。
     if(AppStatus<0) {
@@ -58,8 +47,12 @@ void main(void)
         case -7:
             Scr_Driver_Control_Heat_RLY(test_relay_on);//继电器控制 HEAT RLY P02
             break;
-				case -8:
-					Scr_Driver_PWM_Init();
+        case -8:
+            Scr_Driver_PWM_Init();
+            break;
+        case -9:
+            Uart0_Test();
+            break;
         default:
             break;
         }
@@ -67,57 +60,72 @@ void main(void)
 
     //正常运行。。。
     if(AppStatus==1)
-    {
-			Scr_Driver_Control_Heat_RLY(relay_on);
-			/**/
+    {   /**/
+
         //漏电检测
         Leakage_EX_Init();
+			
+				//水流检测
+				Water_Detection_EX_Init();
+				//水流检测定时器
+				Water_Detection_Timer_Init();
+			
+				//测试。。。 注意：一定要先进水，防止干烧**************
+				//Protocol_Heater_Receive_Data = Protocol_Heater_Start;
+			
         while(1)
         {
-            Start_Heater();
-            Stop_Heater();
-
-            //主控发送启动热水器指令
-            if(Heater_Control_Flag==1 && Heater_Current_Flag==0)
-            {
-                Start_Heater();
-                Heater_Current_Flag=1;
+            //主控启动热水器
+            if(Protocol_Heater_Receive_Data == Protocol_Heater_Start
+                    && heater_relay_on==0) {
+                heater_relay_on=1;
+                Scr_Driver_Control_Heat_RLY(heater_relay_on);
             }
+
             //主控发送停止热水器指令
-            if(Heater_Control_Flag==0 && Heater_Current_Flag==1)
+            if(Protocol_Heater_Receive_Data == Protocol_Heater_Stop && heater_relay_on==1)
             {
-                Stop_Heater();
-                Heater_Current_Flag=0;
+                heater_relay_on=0;
+                Scr_Driver_Control_Heat_RLY(heater_relay_on);
             }
+						
+						//进水温度
+						ADC_Init(AIN9);
+						nADWtrTempValue=ADC_Convert(); //启动ADC转换，获得转换值
+						ret = get_temperature_from_table(nADWtrTempValue,&water_temperature_in);
+						
+						if(ret==-1){ //通知检测温度异常，超过最低温度，发送主板BEEP报警
+							Heater_Exception_Flag=Heater_Ex_In_Water_Temp_Low;
+						}
+						else if(ret==-2){ //通知检测温度异常，超过最高温度发送主板BEEP报警
+							Heater_Exception_Flag=Heater_Ex_In_Water_Temp_High;
+						}
+						else{
+							//35度~60度 自动调节
+						}
+
+						//出水温度
+						ADC_Init(AIN8);
+						nADWtrTempValue=ADC_Convert(); //启动ADC转换，获得转换值
+						ret = get_temperature_from_table(nADWtrTempValue,&water_temperature_out);
+						
+						if(ret==-1){ //通知检测温度异常，超过最低温度，发送主板BEEP报警
+							Heater_Exception_Flag=Heater_Ex_Out_Water_Temp_Low;
+						}
+						else if(ret==-2){ //通知检测温度异常，超过最高温度发送主板BEEP报警
+							Heater_Exception_Flag=Heater_Ex_Out_Water_Temp_High;
+						}
+						else{
+							//35度~60度 自动调节
+						}
+
             //热水器内部异常，将异常标志发送到主控处理
-            if(Heater_Exception_Flag>Heater_Exception_Normal)
+            if(Heater_Exception_Flag>Heater_Ex_Normal)
             {
-                //停止热水器
-                Stop_Heater();
-                Heater_Current_Flag=0;
-
-                //发送热水器内部异常标志
-                //??????
-
                 //漏电检测异常
-                if(Heater_Exception_Flag==Heater_Exception_Leakage) {
+                if(Heater_Exception_Flag==Heater_Ex_Leakage) {
                 }
             }
         }
-				
     }
-
-}
-
-
-//启动热水器
-int Start_Heater()
-{
-    return 0;
-}
-
-//停止热水器
-int Stop_Heater()
-{
-    return 0;
 }

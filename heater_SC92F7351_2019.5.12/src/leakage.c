@@ -54,6 +54,6 @@ void Leakage_EX0_Handle(void)
 	if(P10 == 1)
 	{
 		//设置漏电检测异常标志
-		Heater_Exception_Flag = Heater_Exception_Leakage;
+		Heater_Exception_Flag = Heater_Ex_Leakage;
 	}
 }

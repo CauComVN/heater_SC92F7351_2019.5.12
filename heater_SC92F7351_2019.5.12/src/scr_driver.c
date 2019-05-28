@@ -15,6 +15,12 @@
 //HEAT ERROR 为输入端，如果等于高电平，表明热水器温度过高
 //如果为低电平，表明热水器温度在正常范围内
 
+//当前热水器运行或停止状态 控制继电器动作 0：停止 1：运行
+volatile bit heater_relay_on=0;
+
+//热水器内部异常状态
+volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
+
 void Zero_Crossing_EXTI_Test(void);
 void Zero_Crossing_EX_Init(void);
 void Zero_Crossing_EX2_Handle();

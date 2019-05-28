@@ -2,6 +2,19 @@
 
 void Uart0_Init(void);
 void Uart0_Test(void);
+void UART_SentChar(uchar chr);
+
+//下位机热水器通信协议
+uchar Protocol_Heater_Default						= 0x00;			//初始值
+uchar Protocol_Heater_Start						  = 0x01; 		//启动热水器
+uchar Protocol_Heater_Stop  						= 0x02; 		//停止热水器
+uchar Protocol_Heater_Increases_Power   = 0x03;			//热水器增加功率
+uchar Protocol_Heater_Reduce_Power			= 0x04;			//热水器减少功率 
+
+//下位机热水器通信协议接收到的命令协议数据
+volatile uchar Protocol_Heater_Receive_Data      = 0x00;
+	
+
 bit UartSendFlag = 0; //发送中断标志位
 bit UartReceiveFlag = 0; //接收中断标志位
 /*****************************************************
@@ -13,6 +26,7 @@ bit UartReceiveFlag = 0; //接收中断标志位
 void Uart0_Test(void)
 {
 	Uart0_Init();
+	UART_SentChar(0x56);
 	while(1)
 	{
 		SBUF = 0x55;
@@ -85,3 +99,19 @@ void UartInt(void) interrupt 4
 		UartReceiveFlag = 1;
 	}	
 }
+
+void UART_SentChar(uchar chr)
+{
+  //发送一个字节
+  SBUF = chr;
+  while( TI == 0);
+  TI = 0;
+}
+
+//void UART_SendString(uchar *str)
+//{
+//  while(*str != '\0')
+//  {
+//      UART_SentChar(*str++);
+//  }
+//}
