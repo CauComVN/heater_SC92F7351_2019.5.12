@@ -4,7 +4,6 @@
 #define UART0_BUFF_LENGTH	  7	//UART0接受缓冲区的容量（Byte) 00001 \0
 uchar Uart0BuffNumber=0;
 uchar Uart0Buff[UART0_BUFF_LENGTH];
-//void Uart_SendString(unsigned char *str,unsigned char strlen);
 
 void UART_SentChar(uchar chr);
 void UART_SendString(uchar *str);
@@ -38,14 +37,12 @@ void Uart0_Test(void)
 		SBUF = 0x55;
 		while(!UartSendFlag);
 		UartSendFlag = 0;
-		*/
+		*/		
 		
-		//Uart_SendString("00001",UART0_BUFF_LENGTH);
 		printf("00100\n");
 		
 		if(Uart0BuffNumber>=(UART0_BUFF_LENGTH-1))				//接收计数
-	  {	    
-			//Uart_SendString(Uart0Buff,UART0_BUFF_LENGTH);		
+	  {	
 			UART_SendString(Uart0Buff);
 			//用户可以在这期间执行其他代码			
 			Uart0BuffNumber=0	;				 //将缓冲数组指向开始
@@ -142,13 +139,3 @@ void UART_SendString(uchar *str)
 //原文：https://blog.csdn.net/qq_41549389/article/details/80742032 
 //版权声明：本文为博主原创文章，转载请附上博文链接！
 
-//void Uart_SendString(unsigned char *str,unsigned char strlen)
-//{
-//  unsigned char i; 
-//	for(i=0;i<strlen;i++)
-//	{
-//	   SBUF = *(str++);
-//	   while(!UartSendFlag);
-//	   UartSendFlag=0;
-//	} 
-//}
