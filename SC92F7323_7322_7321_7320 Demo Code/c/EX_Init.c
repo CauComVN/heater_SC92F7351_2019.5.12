@@ -2,6 +2,9 @@
 
 void EX_Init(void);
 uchar INT1_flag = 0x00;
+
+uint numberPulse = 0;   
+
 /*****************************************************
 *函数名称：void EXTI_Test(void)
 *函数功能：外部中断测试
@@ -55,23 +58,25 @@ void EX_Init(void)
 *****************************************************/
 void EX0() interrupt	0
 {
-    P26 = ~P26;
+//    P26 = ~P26;
 }
 
 void EX1() interrupt	2
 {
-    P27 = ~P27;
-	if(P16 == 0)
-	{
-		INT1_flag = 0x10; //INT12产生中断
-	}
-	if(P17 == 0)
-	{
-		INT1_flag = 0x20; //INT13产生中断
-	}
+//    P27 = ~P27;
+//	if(P16 == 0)
+//	{
+//		INT1_flag = 0x10; //INT12产生中断
+//	}
+//	if(P17 == 0)
+//	{
+//		INT1_flag = 0x20; //INT13产生中断
+//	}
 }
 
 void EX2() interrupt	10
 {
-    P26 = ~P26;
+//    P26 = ~P26;
+	
+	numberPulse++;
 }
