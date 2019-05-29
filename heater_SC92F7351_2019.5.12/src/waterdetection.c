@@ -6,11 +6,16 @@
 //霍尔水流传感器->外部中断计数，内部计时器定时
 //INT25 P21
 
+uint timer_run_cout=0;//2ms*20=40ms
+
 //记录水流脉冲触发中断个数
 uint numberPulse = 0;   
 
 //根据仿真确认少水流阈值，参考和比较numberPulse变量值
 uint waterThreshold=2; 
+
+//水流状态标记 0：无水流 1：少水流 2：多水流，正常
+ volatile int water_flow_flag=0;
 
 void Water_Detection_EX_Init(void);
 void Water_Detection_EXTI_Test(void);
@@ -40,27 +45,31 @@ void Water_Detection_EXTI_Test(void)
 *****************************************************/
 void Water_Detection_EX_Init(void)
 {
+	
     //配置中断口25
-    P2CON &= 0Xdf;     //中断IO口设置为高阻输入
-    P2PH  |= 0x20;     //中断IO口设置为高阻带上拉
-    //P2PH  &= 0XFD; //高阻输入模式，上拉电阻关闭
+    P2CON &= 0xfd;     //中断IO口设置为高阻输入
+    P2PH  |= 0x02;     //中断IO口设置为高阻带上拉
 
-    //配置INT25下降沿中断
+    //配置INT25上升沿中断
     //下降沿设置
-    INT2F = 0X00 ;    //0000 xxxx  0关闭 1使能
+    INT2F &= 0x1f ;    //0000 xxxx  0关闭 1使能
     //上升沿设置
-    INT2R = 0X20 ;    //0000 xxxx  0关闭 1使能
+    INT2R |= 0X20 ;    //0000 xxxx  0关闭 1使能
 
     //外部中断优先级设置
     IE1 |= 0x08;	//0000 x000  INT2使能
     IP1 |= 0X00;
     EA = 1;
+	
+	/**/
+	
+	
 }
 
 void Water_Detection_EX2_Handle()
 {
     /**/
-    IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
+    //IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
 
     //中断2有两路输入，需要区分 ？？？
     numberPulse++; //霍尔水流传感器->外部中断计数
@@ -73,7 +82,7 @@ void Water_Detection_EX2_Handle()
     {
     }
 
-    IE1 |= 0x08;	//0000 x000  INT2使能
+    //IE1 |= 0x08;	//0000 x000  INT2使能
 
 }
 
@@ -108,11 +117,11 @@ void Water_Detection_Timer_Init(void)
 //    TL0 = (65536 - 24000)%256;    //溢出时间：时钟为Fsys，则24000*（1/Fsys）=1ms;
 //    TH0 = (65536 - 24000)/256;
 
-//		TL0 = (65536 - 48000)%256;    //溢出时间：时钟为Fsys，则48000*（1/Fsys）=2ms;
-//		TH0 = (65536 - 48000)/256;
+		TL0 = (65536 - 48000)%256;    //溢出时间：时钟为Fsys，则48000*（1/Fsys）=2ms;
+		TH0 = (65536 - 48000)/256;
 	
-			TL0 = 0;    //溢出时间：时钟为Fsys，则65536*（1/Fsys）=2.73ms;
-			TH0 = 0;
+//			TL0 = 0;    //溢出时间：时钟为Fsys，则65536*（1/Fsys）=2.73ms;
+//			TH0 = 0;
 
     TR0 = 0;
     ET0 = 1;//定时器0允许
@@ -123,19 +132,34 @@ void Water_Detection_Timer_Init(void)
 
 void Water_Detection_Timer0_Handle()
 {
-    //定时到，关闭中断，统计霍尔水流传感器->外部中断计数，分析水流
+	int i=numberPulse;
+	
+	if(timer_run_cout<20) //2*20ms
+	{
+		timer_run_cout++;
+	}
+	else{
+		//定时器重新开始计算时间
+		timer_run_cout=0;
+		
+		//定时到，关闭中断，统计霍尔水流传感器->外部中断计数，分析水流
     EA = 0;
 
     IE1 &= 0xf7;	//0000 x000  INT2使关闭 关闭霍尔水流传感器->外部中断
     TR0=0; //关闭定时器0
 
 		if(numberPulse == 0){
-			Heater_Exception_Flag = Heater_Ex_Water_No_Flow;
+			water_flow_flag=0; ////水流状态标记 0：无水流 1：少水流 2：多水流，正常
+			
+			Heater_Exception_Flag = Heater_Ex_Water_No_Flow;			
 		}
-		else if(numberPulse>0 && numberPulse < waterThreshold){
+		else if(numberPulse>0 && numberPulse <= waterThreshold){
+			water_flow_flag=1;
+			
 			Heater_Exception_Flag = Heater_Ex_Water_Little_Flow;
 		}
 		else{
+			water_flow_flag=2;
 		}
 
     //霍尔水流传感器->外部中断计数清零
@@ -147,11 +171,12 @@ void Water_Detection_Timer0_Handle()
 //		TL0 = (65536 - 48000)%256;    //溢出时间：时钟为Fsys，则48000*（1/Fsys）=2ms;
 //		TH0 = (65536 - 48000)/256;
 		
-		TL0 = 0;    //溢出时间：时钟为Fsys，则65536*（1/Fsys）=2.73ms;
-		TH0 = 0;
+//		TL0 = 0;    //溢出时间：时钟为Fsys，则65536*（1/Fsys）=2.73ms;
+//		TH0 = 0;
 		
 		//开启霍尔水流传感器中断，打开定时器
 		IE1 |= 0x08;	//0000 x000  INT2使能
 		TR0 = 1;//打开定时器0
     EA = 1;
+	}		
 }

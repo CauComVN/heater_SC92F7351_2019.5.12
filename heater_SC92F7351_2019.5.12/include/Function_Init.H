@@ -42,6 +42,15 @@ typedef enum Heater_Exception
 //热水器内部异常状态
 extern volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
+//水流状态标记 0：无水流 1：少水流 2：多水流，正常
+extern volatile int water_flow_flag;
+
+//最佳出水温度低值
+extern uint good_temperature_out_low;
+//最佳出水温度高值
+extern uint good_temperature_out_high;
+
+
 extern void IO_Init(void);
 
 extern void ADC_Test(void);
@@ -62,6 +71,7 @@ extern void Water_Detection_Timer_Init(void);
 extern void Water_Detection_EX2_Handle();
 extern void Water_Detection_Timer0_Handle();
 
+extern void Zero_Crossing_EX_Init(void);
 extern void Zero_Crossing_EXTI_Test(void);
 extern void Zero_Crossing_EX2_Handle();
 
@@ -69,6 +79,9 @@ extern void Scr_Driver_PWM_Init(void);
 extern void Scr_Driver_PWMInt_Handle();
 extern int Scr_Driver_Check_Heat_Error();//检测温度保险
 extern void Scr_Driver_Control_Heat_RLY(int on);//继电器控制 HEAT RLY P02
+
+//HEAT TRA PWM1 功率调节方式 flag 0:不用调节 1：增加功率 Duty增大 2：减少功率 Duty减少
+extern void Scr_Driver_PWM_Adjust(uint flag);
 
 extern void Uart0_Init(void);
 extern void Uart0_Test(void);

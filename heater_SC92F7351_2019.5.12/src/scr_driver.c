@@ -21,6 +21,10 @@ volatile bit heater_relay_on=0;
 //ÈÈË®Æ÷ÄÚ²¿Òì³£×´Ì¬
 volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
+//35¶È~60¶È ×Ô¶¯µ÷½Ú  ×î¼Ñ£º40 - 50
+uint good_temperature_out_low=40;
+uint good_temperature_out_high=50;
+
 void Zero_Crossing_EXTI_Test(void);
 void Zero_Crossing_EX_Init(void);
 void Zero_Crossing_EX2_Handle();
@@ -29,6 +33,9 @@ void Scr_Driver_PWM_Init(void);
 void Scr_Driver_PWMInt_Handle();
 int Scr_Driver_Check_Heat_Error();//¼ì²âÎÂ¶È±£ÏÕ
 void Scr_Driver_Control_Heat_RLY(int on);//¼ÌµçÆ÷¿ØÖÆ HEAT RLY P02
+
+//HEAT TRA PWM1 ¹¦ÂÊµ÷½Ú·½Ê½ flag 0:²»ÓÃµ÷½Ú 1£ºÔö¼Ó¹¦ÂÊ DutyÔö´ó 2£º¼õÉÙ¹¦ÂÊ Duty¼õÉÙ
+void Scr_Driver_PWM_Adjust(uint flag);
 
 uchar Zero_Crossing_INT1_flag = 0x00;
 /*****************************************************
@@ -58,9 +65,9 @@ void Zero_Crossing_EX_Init(void)
 
     //INT24ÉÏÉýÖÐ¶Ï
     //ÏÂ½µÑØÉèÖÃ
-    INT2F = 0X00 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
+    INT2F &= 0x2F; //= 0X00 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
     //ÉÏÉýÑØÉèÖÃ
-    INT2R = 0X10 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
+    INT2R |= 0X10 ;    //0000 xxxx  0¹Ø±Õ 1Ê¹ÄÜ
 
     //Íâ²¿ÖÐ¶ÏÓÅÏÈ¼¶ÉèÖ
     IE1 |= 0x08;	//0000 x000  INT2Ê¹ÄÜ
@@ -92,12 +99,41 @@ void Scr_Driver_PWM_Init(void)
     PWMCON  = 0x16;		//PWMÊä³öµ½IO£¬PWMÊ±ÖÓÎªFsys/128 HEAT TRA PWM1
     PWMPRD  = 186;		//PWMÖÜÆÚ=(186+1)*(1*128/24us)=997.33¡Ö=1ms;
     PWMCFG  = 0x10;		//PWM1Êä³ö·´Ïò,Êä³öÖÁP01
-    PWMDTY1 = 15;     //PWM1µÄDuty = 15/60 =1/4
+    PWMDTY1 = 10;     //PWM1µÄDuty = 15/60 =1/4
     PWMDTYA = 0x00;		//PWMÕ¼¿Õ±ÈÎ¢µ÷¼Ä´æÆ÷£¬ÕâÀï²»Î¢µ÷
     PWMCON |= 0x80;     //¿ªÆôPWM
     IE1 |= 0x02;        //¿ªÆôPWMÖÐ¶Ï
     EA = 1;
 	
+}
+
+//HEAT TRA PWM1 ¹¦ÂÊµ÷½Ú·½Ê½ flag 0:²»ÓÃµ÷½Ú 1£ºÔö¼Ó¹¦ÂÊ DutyÔö´ó 2£º¼õÉÙ¹¦ÂÊ Duty¼õÉÙ
+void Scr_Driver_PWM_Adjust(uint flag)
+{
+	if(flag==1 || flag==2)
+	{
+		EA=0;
+		IE1 &= 0xfd;        //¹Ø±ÕPWMÖÐ¶Ï		
+		
+		if(flag==1){ //Ôö¼Ó¹¦ÂÊ
+			PWMDTY1=PWMDTY1+3;
+			if(PWMDTY1>59)
+			{
+				PWMDTY1=59;
+			}
+		}
+		else if(flag==2)
+		{
+			PWMDTY1=PWMDTY1-3;
+			if(PWMDTY1<1)
+			{				
+				PWMDTY1=1;
+			}
+		}			
+		
+		IE1 |= 0x02;        //¿ªÆôPWMÖÐ¶Ï
+		EA=1;
+	}
 }
 
 void Scr_Driver_PWMInt_Handle()

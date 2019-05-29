@@ -36,9 +36,9 @@ void Leakage_EX_Init(void)
  
 	//配置INT00上升沿中断
     //下降沿设置	
-	INT0F = 0X00 ;    //xxxx 0000  0关闭 1使能
+	INT0F &= 0x0e;//= 0X00 ;    //xxxx 0000  0关闭 1使能
     //上升沿设置	
-	INT0R = 0X01 ;    //xxxx 0000  0关闭 1使能 
+	INT0R |= 0X01 ;    //xxxx 0000  0关闭 1使能 
 	
 	//外部中断优先级设置
 	IE  |= 0x01;	//0000 0x0x  INT0使能

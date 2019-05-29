@@ -42,7 +42,8 @@ void Uart0_Test(void)
 *****************************************************/
 void Uart0_Init(void)    //选择Timer1作为波特率信号发生器
 {
-	P1CON = 0X08;
+	P1CON |= 0X08; // p13 TX 强推输出
+	P1CON &= 0xfb; // p12 RX
 	P1PH = 0X04;	 //TX为强推输出，RX为带上拉输入；
 	P13 = 1;		 //TX初始高电平；
 	SCON = 0X50;     //方式1，允许接收数据
