@@ -99,7 +99,7 @@ void Scr_Driver_PWM_Init(void)
     PWMCON  = 0x16;		//PWM输出到IO，PWM时钟为Fsys/128 HEAT TRA PWM1
     PWMPRD  = 186;		//PWM周期=(186+1)*(1*128/24us)=997.33≈=1ms;
     PWMCFG  = 0x10;		//PWM1输出反向,输出至P01
-    PWMDTY1 = 10;     //PWM1的Duty = 15/60 =1/4
+    PWMDTY1 = 15;     //PWM1的Duty = 15/60 =1/4
     PWMDTYA = 0x00;		//PWM占空比微调寄存器，这里不微调
     PWMCON |= 0x80;     //开启PWM
     IE1 |= 0x02;        //开启PWM中断

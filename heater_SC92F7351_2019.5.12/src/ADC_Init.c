@@ -102,7 +102,7 @@ int search(uint arry[],uint n,uint key)
 
 int get_temperature_from_table(uint nADValue, int* temperature)
 {
-    uint Rntc=25;
+    uint Rntc=50;//常温
 
     //计算电阻公式 x/c=Rntc/(Rup+Rntc)
     //c:如果ADC采集精度为N bit，对应满量程值为c值 2^N=c，主控芯片12位ADC， 2(12)=4096  5v=5v;
@@ -126,6 +126,8 @@ int get_temperature_from_table(uint nADValue, int* temperature)
         *temperature =search(bufTable_NTC_R, sizeof(bufTable_NTC_R)/2,	Rntc);
         return 0;
     }
+		
+		return -2;
 }
 
 

@@ -63,7 +63,7 @@ void main(void)
     {
 
         //漏电检测
-        Leakage_EX_Init();
+//        Leakage_EX_Init();
 
         //水流检测
         Water_Detection_EX_Init();
@@ -74,7 +74,7 @@ void main(void)
         Zero_Crossing_EX_Init();
 
         //串口通信初始化
-        Uart0_Init();
+//        Uart0_Init();
 
         //测试。。。 注意：一定要先进水，防止干烧**************
         //Protocol_Heater_Receive_Data = Protocol_Heater_Start;
@@ -120,22 +120,22 @@ void main(void)
                 Protocol_Heater_Receive_Data=Protocol_Heater_Default;
             }
 
-            if(Protocol_Heater_Receive_Data == Protocol_Heater_Increases_Power && heater_relay_on==1)
-            {
-#ifdef SERIAL_TEST
-                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
-#endif
-                //调高功率
-                Scr_Driver_PWM_Adjust(1); //flag=1
-            }
-            else if(Protocol_Heater_Receive_Data == Protocol_Heater_Reduce_Power && heater_relay_on==1)
-            {
-#ifdef SERIAL_TEST
-                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
-#endif
-                //调低功率
-                Scr_Driver_PWM_Adjust(2); //flag=2
-            }
+//            if(Protocol_Heater_Receive_Data == Protocol_Heater_Increases_Power && heater_relay_on==1)
+//            {
+//#ifdef SERIAL_TEST
+//                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
+//#endif
+//                //调高功率
+//                Scr_Driver_PWM_Adjust(1); //flag=1
+//            }
+//            else if(Protocol_Heater_Receive_Data == Protocol_Heater_Reduce_Power && heater_relay_on==1)
+//            {
+//#ifdef SERIAL_TEST
+//                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
+//#endif
+//                //调低功率
+//                Scr_Driver_PWM_Adjust(2); //flag=2
+//            }
 
             //进水温度
             ADC_Init(AIN9);
@@ -180,33 +180,33 @@ void main(void)
             }
 
             //检测温度保险 HEAT ERROR 直接检测端口值 P03   轮询方式
-            ret=Scr_Driver_Check_Heat_Error();
-            if(ret==-1 && heater_relay_on==1)
-            {
-                Heater_Exception_Flag=Heater_Ex_Thermal_Switch_Error;
+//            ret=Scr_Driver_Check_Heat_Error();
+//            if(ret==-1 && heater_relay_on==1)
+//            {
+//                Heater_Exception_Flag=Heater_Ex_Thermal_Switch_Error;
 
-                heater_relay_on=0;
-                Scr_Driver_Control_Heat_RLY(heater_relay_on);
-            }
+//                heater_relay_on=0;
+//                Scr_Driver_Control_Heat_RLY(heater_relay_on);
+//            }
 
-            //热水器内部异常，将异常标志发送到主控处理
-            if(Heater_Exception_Flag>Heater_Ex_Normal)
-            {
-                //漏电检测异常
-                if(Heater_Exception_Flag==Heater_Ex_Leakage) {
-                }
-                //无水流或少水流
-                if(Heater_Exception_Flag == Heater_Ex_Water_No_Flow
-                        || Heater_Exception_Flag == Heater_Ex_Water_Little_Flow)
-                {
-                    //停止热水器
+//            //热水器内部异常，将异常标志发送到主控处理
+//            if(Heater_Exception_Flag>Heater_Ex_Normal)
+//            {
+//                //漏电检测异常
+//                if(Heater_Exception_Flag==Heater_Ex_Leakage) {
+//                }
+//                //无水流或少水流
+//                if(Heater_Exception_Flag == Heater_Ex_Water_No_Flow
+//                        || Heater_Exception_Flag == Heater_Ex_Water_Little_Flow)
+//                {
+//                    //停止热水器
 //										if(heater_relay_on == 1)
 //										{
 //											heater_relay_on=0;
 //											Scr_Driver_Control_Heat_RLY(heater_relay_on);
 //										}
-                }
-            }
+//                }
+//            }
         }
     }
 }
