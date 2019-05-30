@@ -12,6 +12,8 @@ void Uart0_Init(void);
 bit UartSendFlag = 0; //发送中断标志位
 bit UartReceiveFlag = 0; //接收中断标志位
 
+uchar receivchar=0x00;
+
 char putchar(char c)//用于重写printf
 {
 	SBUF = c;
@@ -50,12 +52,27 @@ void Uart0_Test(void)
 	  }
 		*/
 		
+		/*
 		if(Uart0BuffNumber>=(UART0_BUFF_LENGTH-1))				//接收计数
 	  {	
 			UART_SendString(Uart0Buff);
 			//用户可以在这期间执行其他代码			
 			Uart0BuffNumber=0	;				 //将缓冲数组指向开始
 	  }
+		*/
+		
+		if(UartReceiveFlag)
+		{
+			UartReceiveFlag=0;
+			
+			receivchar=SBUF;
+			receivchar+=0x10;
+				
+			SBUF = receivchar;	
+			while(!UartSendFlag);
+			UartSendFlag = 0;		
+			
+		}
 	}
 }
 /*****************************************************
@@ -66,8 +83,13 @@ void Uart0_Test(void)
 *****************************************************/
 void Uart0_Init(void)    //选择Timer1作为波特率信号发生器
 {
-	P1CON = 0X08;
-	P1PH = 0X04;	 //TX为强推输出，RX为带上拉输入；
+//	P1CON = 0X08;
+//	P1PH = 0X04;	 //TX为强推输出，RX为带上拉输入
+	
+	P1CON |= 0x08; // p13 TX 强推输出
+  P1CON &= 0xfb; // p12 RX 输入
+  P1PH |= 0x04;	 //TX为强推输出，RX为带上拉输入	
+	
 	P13 = 1;		 //TX初始高电平；
 	SCON = 0X50;     //方式1，允许接收数据
 	PCON |= 0X80; 
