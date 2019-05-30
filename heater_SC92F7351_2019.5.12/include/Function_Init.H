@@ -13,17 +13,20 @@
 enum Channel {AIN0=0,AIN1,AIN2,AIN3,AIN8=8,AIN9,VDD4=15};
 
 //下位机热水器通信协议
-extern uchar Protocol_Heater_Default;			//初始值
-extern uchar Protocol_Heater_Start; 			//启动热水器
-extern uchar Protocol_Heater_Stop; 				//停止热水器
-extern uchar Protocol_Heater_Increases_Power;			//热水器增加功率
-extern uchar Protocol_Heater_Reduce_Power;				//热水器减少功率
+enum Protocol_Heater 
+{
+	Protocol_Heater_Default						= 0x00,			//初始值
+	Protocol_Heater_Start						  = 0x01, 		//启动热水器
+	Protocol_Heater_Stop  						= 0x02, 		//停止热水器
+	Protocol_Heater_Increases_Power   = 0x03,			//热水器增加功率
+	Protocol_Heater_Reduce_Power			= 0x04,			//热水器减少功率 
+};
 
 //下位机热水器通信协议接收到的命令协议数据
-extern volatile uchar Protocol_Heater_Receive_Data;
+extern uchar Protocol_Heater_Receive_Data;
 
 //当前热水器运行或停止状态 继电器动作 0：停止 1：运行
-extern volatile bit heater_relay_on;
+extern bit heater_relay_on;
 
 
 //热水器内部异常状态
@@ -37,13 +40,14 @@ typedef enum Heater_Exception
     Heater_Ex_Out_Water_Temp_High,
 		Heater_Ex_Water_No_Flow,
 		Heater_Ex_Water_Little_Flow,
+		Heater_Ex_Thermal_Switch_Error,
 } Enum_Heater_Exception_Flag;
 
 //热水器内部异常状态
-extern volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
+extern Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
 //水流状态标记 0：无水流 1：少水流 2：多水流，正常
-extern volatile int water_flow_flag;
+extern int water_flow_flag;
 
 //最佳出水温度低值
 extern uint good_temperature_out_low;
@@ -86,6 +90,9 @@ extern void Scr_Driver_PWM_Adjust(uint flag);
 extern void Uart0_Init(void);
 extern void Uart0_Test(void);
 extern void UART_SentChar(uchar chr);
+
+//串口调试通信协议开关
+//#define SERIAL_TEST 
 
 /*****************************************
 说明：选择测试IC

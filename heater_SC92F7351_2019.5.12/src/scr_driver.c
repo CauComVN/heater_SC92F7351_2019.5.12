@@ -16,14 +16,14 @@
 //如果为低电平，表明热水器温度在正常范围内
 
 //当前热水器运行或停止状态 控制继电器动作 0：停止 1：运行
-volatile bit heater_relay_on=0;
+bit heater_relay_on=0;
 
 //热水器内部异常状态
-volatile Enum_Heater_Exception_Flag Heater_Exception_Flag;
+Enum_Heater_Exception_Flag Heater_Exception_Flag;
 
-//35度~60度 自动调节  最佳：40 - 50
+//35度~60度 自动调节  最佳：40 - 55
 uint good_temperature_out_low=40;
-uint good_temperature_out_high=50;
+uint good_temperature_out_high=55;
 
 void Zero_Crossing_EXTI_Test(void);
 void Zero_Crossing_EX_Init(void);
@@ -141,21 +141,20 @@ void Scr_Driver_PWMInt_Handle()
     //根据出水/进水温度自动调节PWM1的Duty
 }
 
-//检测温度保险 HEAT ERROR 直接检测端口值 P03
+//检测温度保险 HEAT ERROR 直接检测端口值 P03   轮询方式
 int Scr_Driver_Check_Heat_Error()
-{
-	P0VO = P0VO&0xf7; //P03端口设置成普通I/O口
+{	
 	if(P03==0)
 	{
 		//温度正常范围内，温度保险不跳闸
-		return 1;
+		return 0;
 	}
 	else if(P03==1)
 	{
 		//温度异常范围内，温度保险已跳闸
-		return 0;
+		return -1;
 	}
-	return 0;
+	return -1;
 }
 
 //继电器控制 HEAT RLY P02

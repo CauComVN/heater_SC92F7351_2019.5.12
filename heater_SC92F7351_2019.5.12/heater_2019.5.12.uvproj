@@ -173,11 +173,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4104</DriverSelection>
+            <DriverSelection>4102</DriverSelection>
           </Flash1>
           <bUseTDR>0</bUseTDR>
           <Flash2>SinOne_Chip\SOC_Debug_Driver\SinOne_Chip_Debug_Driver.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -342,7 +342,7 @@
           <Lx51>
             <useFile>0</useFile>
             <linkonly>0</linkonly>
-            <UseMemoryFromTarget>1</UseMemoryFromTarget>
+            <UseMemoryFromTarget>0</UseMemoryFromTarget>
             <CaseSensitiveSymbols>0</CaseSensitiveSymbols>
             <WarningLevel>2</WarningLevel>
             <DataOverlaying>1</DataOverlaying>
@@ -356,7 +356,7 @@
             <UserClasses></UserClasses>
             <CSection></CSection>
             <UserSection></UserSection>
-            <CodeBaseAddress></CodeBaseAddress>
+            <CodeBaseAddress>0x100</CodeBaseAddress>
             <XDataBaseAddress></XDataBaseAddress>
             <PDataBaseAddress></PDataBaseAddress>
             <BitBaseAddress></BitBaseAddress>
