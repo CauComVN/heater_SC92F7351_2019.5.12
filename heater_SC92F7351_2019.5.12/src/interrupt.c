@@ -7,7 +7,8 @@ void ADC_Interrupt(void) interrupt 6
 
 void EX0_Interrupt() interrupt	0
 {
-    Leakage_EX0_Handle();
+//    Leakage_EX0_Handle();
+	P00 = ~P00;
 }
 
 void EX2_Interrupt() interrupt	10
@@ -31,3 +32,4 @@ void PWMInt(void) interrupt 8
 {
     Scr_Driver_PWMInt_Handle();
 }
+

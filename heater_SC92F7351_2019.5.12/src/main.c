@@ -9,7 +9,7 @@
 
 void main(void)
 {
-    int AppStatus=-9;  //1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制 -8：PWM测试 -9：串口发送接收
+	int AppStatus=3;  //3：PWM测试 2:调节可控硅控制功率调节灯泡亮度  1: 正常运行 -1:进水/出水温度 -2:有水流检测 -3：漏电检测 -4：水流温度检测定时器 -5：过零检测 -6：检测温度保险 -7:继电器控制 -8：PWM测试 -9：串口发送接收
 
     int ret=0;
     int test_relay_on=1; //继电器动作，热水器开始工作
@@ -70,14 +70,14 @@ void main(void)
         //水流检测定时器
         Water_Detection_Timer_Init();
 
-        //启动可控硅控制
-        Zero_Crossing_EX_Init();
+//        //启动可控硅控制
+//        Zero_Crossing_EX_Init();
 
         //串口通信初始化
 //        Uart0_Init();
 
         //测试。。。 注意：一定要先进水，防止干烧**************
-        //Protocol_Heater_Receive_Data = Protocol_Heater_Start;
+        Protocol_Heater_Receive_Data = Protocol_Heater_Start;
 
         while(1)
         {
@@ -93,10 +93,10 @@ void main(void)
             if(Protocol_Heater_Receive_Data == Protocol_Heater_Start
                     && heater_relay_on==0)
             {
-#ifdef SERIAL_TEST
-                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
-#endif
-                if(water_flow_flag == 2)
+//#ifdef SERIAL_TEST
+//                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
+//#endif
+                //if(water_flow_flag == 2)
                 {
                     //水流状态标记 0：无水流 1：少水流 2：多水流，正常
                     heater_relay_on=1;
@@ -104,21 +104,25 @@ void main(void)
 
                     //主控发送指令已处理，串口接收数据设置成默认状态
                     Protocol_Heater_Receive_Data=Protocol_Heater_Default;
+									
+									Zero_Crossing_EX_Init();
+
+										
                 }
             }
 
             //主控发送停止热水器指令
-            if(Protocol_Heater_Receive_Data == Protocol_Heater_Stop && heater_relay_on==1)
-            {
-#ifdef SERIAL_TEST
-                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
-#endif
-                heater_relay_on=0;
-                Scr_Driver_Control_Heat_RLY(heater_relay_on);
+//            if(Protocol_Heater_Receive_Data == Protocol_Heater_Stop && heater_relay_on==1)
+//            {
+////#ifdef SERIAL_TEST
+////                UART_SentChar(Protocol_Heater_Receive_Data+0x20);
+////#endif
+//                heater_relay_on=0;
+//                Scr_Driver_Control_Heat_RLY(heater_relay_on);
 
-                //主控发送指令已处理，串口接收数据设置成默认状态
-                Protocol_Heater_Receive_Data=Protocol_Heater_Default;
-            }
+//                //主控发送指令已处理，串口接收数据设置成默认状态
+////                Protocol_Heater_Receive_Data=Protocol_Heater_Default;
+//            }
 
 //            if(Protocol_Heater_Receive_Data == Protocol_Heater_Increases_Power && heater_relay_on==1)
 //            {
@@ -164,19 +168,19 @@ void main(void)
                 Heater_Exception_Flag=Heater_Ex_Out_Water_Temp_High;
             }
             else {
-                //35度~60度 自动调节
-                if(water_temperature_out<good_temperature_out_low && heater_relay_on==1)
-                {
-                    //调高功率
-                    Scr_Driver_PWM_Adjust(1); //flag=1
-                }
-                else if(water_temperature_out>good_temperature_out_high  && heater_relay_on==1)
-                {
-                    //调低功率
-                    Scr_Driver_PWM_Adjust(2); //flag=2
-                }
-                else {
-                }
+//                //35度~60度 自动调节
+//                if(water_temperature_out<good_temperature_out_low && heater_relay_on==1)
+//                {
+//                    //调高功率
+//                    Scr_Driver_PWM_Adjust(1); //flag=1
+//                }
+//                else if(water_temperature_out>good_temperature_out_high  && heater_relay_on==1)
+//                {
+//                    //调低功率
+//                    Scr_Driver_PWM_Adjust(2); //flag=2
+//                }
+//                else {
+//                }
             }
 
             //检测温度保险 HEAT ERROR 直接检测端口值 P03   轮询方式
@@ -209,4 +213,36 @@ void main(void)
 //            }
         }
     }
+		
+		if(AppStatus==2)
+		{
+			///用串口P12 P13模拟控制功率
+			////////////////////////////////////////////////////////////
+			//配置中断口INT00 P10
+			P1CON &= 0XF3;     //中断IO口设置为高阻输入
+			P1PH  |= 0x0c;     //中断IO口设置为高阻带上拉
+		 
+			//配置INT00上升沿中断
+				//下降沿设置	
+			INT0F &= 0x0c;//= 0X00 ;    //xxxx 0000  0关闭 1使能
+				//上升沿设置	
+			INT0R |= 0X00 ;    //xxxx 0000  0关闭 1使能 
+			
+			//外部中断优先级设置
+			IE  |= 0x01;	//0000 0x0x  INT0使能
+			IP  |= 0X00;
+			
+			EA = 1;
+			//////////////////////////////////////////////////////////
+			while(1)
+			{
+			}
+		}
+		if(AppStatus==3)
+		{
+			Scr_Driver_PWM_Init();
+			while(1)
+			{					
+			}
+		}
 }

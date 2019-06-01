@@ -108,6 +108,8 @@
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
         <bEvRecOn>1</bEvRecOn>
+        <bSchkAxf>0</bSchkAxf>
+        <bTchkAxf>0</bTchkAxf>
         <nTsel>10</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
@@ -142,25 +144,25 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>157</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>-16774862</Address>
+          <LineNumber>101</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-16774109</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\WATERDETECTION.C</Filename>
+          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\UART_INIT.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>152</LineNumber>
+          <LineNumber>157</LineNumber>
           <EnabledFlag>0</EnabledFlag>
-          <Address>-16774895</Address>
+          <Address>-16774929</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -174,25 +176,25 @@
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>118</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>-16774806</Address>
+          <LineNumber>10</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-16774501</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\SCR_DRIVER.C</Filename>
+          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\INTERRUPT.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>138</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
-          <Address>-16776015</Address>
+          <LineNumber>102</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-16776180</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -206,9 +208,9 @@
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>95</LineNumber>
+          <LineNumber>222</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16776179</Address>
+          <Address>-16776025</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -217,39 +219,23 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\heater_2019.5\MAIN\222</Expression>
         </Bp>
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>14</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16776365</Address>
+          <LineNumber>142</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\MAIN.C</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>6</Number>
-          <Type>0</Type>
-          <LineNumber>127</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16776059</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>E:\Cai\git_code\heater_SC92F7351_2019.5.12\heater_SC92F7351_2019.5.12\src\MAIN.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\heater_2019.5\MAIN\127</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -317,6 +303,10 @@
       <pszMrule></pszMrule>
       <pSingCmds></pSingCmds>
       <pMultCmds></pMultCmds>
+      <pMisraNamep></pMisraNamep>
+      <pszMrulep></pszMrulep>
+      <pSingCmdsp></pSingCmdsp>
+      <pMultCmdsp></pMultCmdsp>
     </TargetOption>
   </Target>
 

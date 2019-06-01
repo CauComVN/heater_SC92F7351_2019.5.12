@@ -95,3 +95,11 @@ sbit	可寻址位	0或1
 
 6.
 串口正常运行，需要设置Options for Target -> BL51 Locate -> 不选中 Use Memory Layout from Target Dialog -> Code Range: 0x100
+
+7.
+热水器使用注意事项：
+1.先要通水一会，去掉里面的空气和气泡
+2.最高温度不要设置太高，最好不要超过50度
+3.不能无水干烧
+
+8.pwm正常运行，需要设置Options for Target -> BL51 Locate -> 不选中 Use Memory Layout from Target Dialog -> Code Range: 0x100

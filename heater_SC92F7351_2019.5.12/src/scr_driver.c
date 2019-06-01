@@ -79,7 +79,7 @@ void Zero_Crossing_EX2_Handle()
 {
 	
     //如果中断2有两路输入，根据上升沿或者下降沿来确认，上升沿中断，所以端口电平是1
-    if(P20 == 1) //INT24 P20 过零检测到零点
+    //if(P20 == 1) //INT24 P20 过零检测到零点
     {
         //PWM计数值重置
         Scr_Driver_PWM_Init();
@@ -139,6 +139,7 @@ void Scr_Driver_PWM_Adjust(uint flag)
 void Scr_Driver_PWMInt_Handle()
 {
     //根据出水/进水温度自动调节PWM1的Duty
+	int i=0;
 }
 
 //检测温度保险 HEAT ERROR 直接检测端口值 P03   轮询方式

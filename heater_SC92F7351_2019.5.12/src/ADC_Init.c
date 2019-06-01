@@ -126,8 +126,6 @@ int get_temperature_from_table(uint nADValue, int* temperature)
         *temperature =search(bufTable_NTC_R, sizeof(bufTable_NTC_R)/2,	Rntc);
         return 0;
     }
-		
-		return -2;
 }
 
 
